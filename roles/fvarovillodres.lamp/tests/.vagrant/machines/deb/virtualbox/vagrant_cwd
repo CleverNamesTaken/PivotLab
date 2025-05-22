@@ -1,0 +1,5 @@
+<<<<<<< HEAD
+/home/paco/scripts/ansible/ansible-role-lamp/tests
+=======
+/home/paco/.ansible/roles/ansible-role-lamp/tests
+>>>>>>> dab6294c0201ccf2ea0dd6961b1b490d98533f62

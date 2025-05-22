@@ -1,0 +1,14 @@
+from flask import Flask, request
+import socket
+
+app = Flask(__name__)
+
+@app.route('/send-packet', methods=['POST'])
+def send_packet():
+    data = request.get_json()
+    protocol = socket.SOCK_STREAM if data['protocol'] == 'tcp' else socket.SOCK_DGRAM
+    with socket.socket(socket.AF_INET, protocol) as s:
+        s.connect((data['ip'], int(data['port'])))
+        s.sendall(b'\x02sb0000\x03')  # Replace with your STX/ETX packet
+        response = s.recv(1024)  # For TCP only
+    return response.decode()

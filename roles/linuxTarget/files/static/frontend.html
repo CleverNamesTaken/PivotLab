@@ -1,0 +1,22 @@
+<input type="text" id="ip" placeholder="IP">
+<input type="text" id="port" placeholder="Port">
+<select id="protocol">
+  <option value="tcp">TCP</option>
+  <option value="udp">UDP</option>
+</select>
+<button onclick="sendPacket()">Send</button>
+<p>curl command to make this request is as follows:</p>
+<p>curl 'http://<THIS_WEBSERVER>/send-packet'  -H 'Content-Type: application/json' --data-raw '{"ip":"<CALLBACK_IP>","port":"<CALLBACK_PORT>","protocol":"<PROTOCOL>"}'</p>
+<script>
+function sendPacket() {
+  const data = { 
+    ip: document.getElementById('ip').value,
+    port: document.getElementById('port').value,
+    protocol: document.getElementById('protocol').value
+  };
+  fetch('/send-packet', { 
+    method: 'POST', 
+    body: JSON.stringify(data) 
+  });
+}
+</script>

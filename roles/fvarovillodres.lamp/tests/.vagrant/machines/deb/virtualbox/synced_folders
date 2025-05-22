@@ -1,0 +1,1 @@
+{"rsync":{"/vagrant":{"type":"rsync","guestpath":"/vagrant","hostpath":"/home/paco/.ansible/roles/ansible-role-lamp/tests","disabled":false,"__vagrantfile":true,"owner":"vagrant","group":"vagrant"}}}

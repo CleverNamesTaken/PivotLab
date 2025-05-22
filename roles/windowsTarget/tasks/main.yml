@@ -1,0 +1,126 @@
+---
+# tasks file for roles/prepWinTarget
+# Add a check before trying to re-install
+- name: "Check if .NET 4.8 already installed"
+  ansible.windows.win_reg_stat:
+    path: HKLM:\Software\Microsoft\NET Framework Setup\NDP\v4\Full
+    name: Release
+  register: dotnet48__release_registered
+
+- debug:
+    var: dotnet48__release_registered
+
+- name: "Download and Install Microsoft .NET Framework 4.8."
+  block:
+  - name: Download .NET Framework 4.8 installer
+    win_get_url:
+      url: "https://download.microsoft.com/download/f/3/a/f3a6af84-da23-40a5-8d1c-49cc10c8e76f/NDP48-x86-x64-AllOS-ENU.exe"
+      dest: "C:\\Windows\\Temp\\dotnet48.exe"
+    #exit code of 9009 looks like it still works?
+  - name: Install .NET Framework 4.8
+    win_command: "C:\\Windows\\Temp\\dotnet48.exe setup /passive /norestart /log C:\\Windows\\Temp\\dotnet_install.log"
+    register: result
+      #A 3010 exit code means the install was successful but a reboot is required.
+      #I know this only through trial and error and could not find documentation
+    failed_when: result.rc not in [0, 3010]
+  - name: Reboot the machine to complete .NET installation
+    ansible.windows.win_reboot:
+  when: (dotnet48__release_registered.raw_value is not defined or
+        (dotnet48__release_registered.raw_value is defined and
+         dotnet48__release_registered.raw_value < 528040))
+
+- name: install the Win32-OpenSSH service
+  win_chocolatey:
+    name: openssh
+    package_params: /SSHServerFeature
+    state: present
+
+- name: features | Managing Remote Desktop Feature
+  win_feature:
+    name: Remote-Desktop-Services
+    state: present
+
+- name: Create a root user
+  ansible.windows.win_user:
+    name: root
+    password: PivotLab1!
+    state: present
+    groups:
+      - Users
+      - Administrators
+      - "Remote Desktop Users"
+
+- name: Copy public key to authorized_keys
+  win_copy:
+    src: "/tmp/kali_id_rsa.pub"
+    dest: "C:\\ProgramData\\ssh\\administrators_authorized_keys"
+
+- name: Set permissions on authorized_keys
+  win_acl:
+    path: "C:\\ProgramData\\ssh\\administrators_authorized_keys"
+    rights: "FullControl"
+    user: "root"
+    type: "allow"
+
+- name: Install disabledefender-winconfig v0.0.1
+  win_chocolatey:
+    name: disabledefender-winconfig
+    state: present
+
+- name: Disable realtime monitoring
+  win_shell: Set-MpPreference -DisableRealtimeMonitoring $true
+
+      #- name: Disable Real-Time Protection via Registry
+      #ansible.windows.win_regedit:
+      #path: HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender
+      #name: DisableRealtimeMonitoring
+      #data: 1
+      #type: dword
+
+      #- name: Reboot the machine to complete disable of real-time protection
+      #ansible.windows.win_reboot:
+
+- name: "Check if Unified Remote already installed"
+  ansible.windows.win_stat:
+    path: 'C:\Program Files (x86)\Unified Remote 3\RemoteServerWin.exe'
+  register: file_check
+
+- name: "Install Unified Remote Server 3.11.0.2483 if not installed"
+  block:
+  - name: Download Unified Remote Server 3.11.0.2483
+    ansible.windows.win_get_url:
+      url: https://www.unifiedremote.com/static/builds/server/windows-x86/2483/ServerSetup-3.11.0.2483.exe
+      dest: 'C:\Windows\temp\ServerSetup-3.11.0.2483.exe'
+  - name: Install Unified Remote 
+    win_command: "C:\\Windows\\Temp\\ServerSetup-3.11.0.2483.exe /silent"
+  when: (not file_check.stat.exists)
+
+- name: Install NSSM
+  win_chocolatey:
+    name: nssm
+    state: present
+
+- name: Gather info for WinServer service
+  ansible.windows.win_service_info:
+    name: WinServer
+  register: winserver_info
+
+- name: Debug winserver_info
+  debug:
+    var: winserver_info
+
+- name: "Create Unified Remote Service"
+  block:
+  - name: Create WinServer Service
+    win_command: >
+      nssm install WinServer "C:\\Program Files (x86)\\Unified Remote 3\\RemoteServerWin.exe"
+  - name: Set Winserver to Auto-Start
+    win_command: nssm set Winserver Start SERVICE_AUTO_START
+  when: winserver_info.services is not defined or winserver_info.services | length == 0
+
+- name: Start Winserver Service
+  win_service:
+    name: WinServer
+    state: started
+
+

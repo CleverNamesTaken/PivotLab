@@ -1,0 +1,54 @@
+---
+  - name: Update apt cache
+    apt: update_cache=yes
+  - name: Upgrade
+    apt:
+      upgrade: yes
+  - name: Instalando apache
+    apt: name=apache2 state=present
+  - name: Nuevo sitio virtual
+    template:
+       src=sitioansible.conf.j2
+       dest=/etc/apache2/sites-available/sitioiaw.conf
+  - name: borrar virtual host por defecto
+    file:
+      path=/etc/apache2/sites-enabled/000-default.conf
+      state=absent
+  - name: borrar index por defecto
+    file:
+      path=/var/www/html/index.html
+      state=absent
+  - name: Nuevo index
+    template:
+       src=index.html
+       dest=/var/www/html/index.html
+  - name: Añadir info.php
+    template:
+       src=info.php
+       dest=/var/www/html/info.php
+  - name: Activar el nuevo sitio
+    file:
+       src=/etc/apache2/sites-available/sitioiaw.conf
+       dest=/etc/apache2/sites-enabled/sitioiaw.conf
+       state=link
+  - name: Activar modulo de apache
+    apache2_module: state=present name=userdir
+    notify:
+      - reiniciando apache
+  - name: Instalando mysql
+    apt: name=mysql-server state=present
+  - name: Instalando modulo python-mysqldb
+    apt: name=python-mysqldb state=present
+  - name: Añadiendo bases de datos
+    mysql_db: name=ASIR
+                  state=present
+    notify:
+      - reiniciando mysql
+  - name: Instalando php
+    apt: name=php5 state=present
+  - name: Instalando paquetes php5
+    apt: name={{ item }}
+         state=latest
+    with_items:
+          - php5-mysql
+          - libapache2-mod-php5

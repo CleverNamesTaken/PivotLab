@@ -1,0 +1,7 @@
+---
+# tasks file for dynamic_motd
+- name: Configure Dynamic motd
+  hosts: server1
+  become: yes
+  roles:
+    - prepare_jump

@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+
+ServerAdmin fvarovillodres@gmail.com
+
+DocumentRoot {{ document_root }}
+
+<Directory {{ document_root }}>
+        Require all granted
+</Directory>
+
+Errorlog ${APACHE_LOG_DIR}/error.log
+
+Customlog ${APACHE_LOG_DIR}/acces.log combined
+
+</VirtualHost>

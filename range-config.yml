@@ -1,0 +1,81 @@
+ludus:
+  - vm_name: "{{ range_id }}-kali"
+    hostname: "kali"
+    template: kali-x64-desktop-template
+    vlan: 20
+    ip_last_octet: 201
+    ram_gb: 8
+    force_ip: false
+    cpus: 4
+    linux: true
+    testing:
+      snapshot: false
+      block_internet: false
+    roles:
+      - attackBox
+  - vm_name: "{{ range_id }}-lamp"
+    hostname: "lamp"
+    template: debian-12-x64-server-template
+    vlan: 20
+    ip_last_octet: 220
+    force_ip: false
+    ram_gb: 8
+    cpus: 4
+    linux: true
+    roles:
+      - lamp
+      - fvarovillodres.lamp
+    unmanaged: false
+  - vm_name: "{{ range_id }}-nginx"
+    hostname: "nginx"
+    template: debian-12-x64-server-template
+    vlan: 20
+    ip_last_octet: 221
+    force_ip: false
+    ram_gb: 8
+    cpus: 4
+    linux: true
+    roles:
+      - nginx
+    unmanaged: false
+  - vm_name: "{{ range_id }}-tom"
+    hostname: "tom"
+    template: debian-12-x64-server-template
+    vlan: 20
+    ip_last_octet: 222
+    force_ip: false
+    ram_gb: 8
+    cpus: 4
+    linux: true
+    roles:
+      - tom
+      - tomcat
+    unmanaged: false
+  - vm_name: "{{ range_id }}-linux"
+    hostname: "linux"
+    template: debian-12-x64-server-template
+    vlan: 22
+    ip_last_octet: 50
+    ram_gb: 8
+    cpus: 4
+    linux: true
+    roles:
+     - linuxTarget
+     - badsectorlabs.ludus_vulhub
+    role_vars:
+      vulhub_envs:
+      - erlang/CVE-2025-32433
+      - cups-browsed/CVE-2024-47177
+  - vm_name: "{{ range_id }}-windows"
+    hostname: "{{ range_id }}-windows"
+    template: win2019-server-x64-template
+    vlan: 22
+    ip_last_octet: 60
+    force_ip: false
+    ram_gb: 8
+    cpus: 4
+    windows:
+      sysprep: false
+    roles:
+      - windowsTarget
+

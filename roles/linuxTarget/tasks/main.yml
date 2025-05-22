@@ -1,0 +1,52 @@
+---
+# tasks file for roles/target1
+- name: Create /opt/callme directory
+  ansible.builtin.file:
+    path: /opt/callme
+    state: directory
+    owner: "root"
+    group: "root"
+    mode: '0755'
+
+- name: Copy 'app.py' file
+  ansible.builtin.copy:
+    src: files/app.py
+    dest: /opt/callme/app.py
+    owner: "root"
+    group: "root"
+    mode: '0644'
+
+- name: Copy 'static' directory recursively
+  ansible.builtin.copy:
+    src: files/static/
+    dest: /opt/callme/static
+    owner: "root"
+    group: "root"
+    mode: '0755'
+
+- name: Install utilities
+  ansible.builtin.package:
+    name:
+    - python3
+    - python3-flask
+    - iptables
+    - netcat-traditional
+    state: present
+
+- name: Create Gunicorn systemd service
+  template:
+    src: flaskapp.service.j2
+    dest: /etc/systemd/system/callme.service
+  notify: Reload systemd
+
+- name: Enable and start service
+  service:
+    name: callme
+    enabled: yes
+    state: started
+
+- name: Add public key from kali
+  ansible.posix.authorized_key:
+    user: "root"
+    state: present
+    key: "{{ lookup('file', '/tmp/kali_id_rsa.pub') }}"

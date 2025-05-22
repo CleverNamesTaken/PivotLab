@@ -1,0 +1,11 @@
+---
+  - name: reiniciando mysql
+    service: name=mysql state=restarted
+  - name: reiniciando apache
+    service: name=apache2 state=restarted
+  - name: reiniciando mariadb
+    service: name=mariadb state=restarted
+  - name: reiniciando httpd
+    service: name=httpd state=restarted
+  - name: reiniciando shorewall
+    service: name=shorewall state=restarted

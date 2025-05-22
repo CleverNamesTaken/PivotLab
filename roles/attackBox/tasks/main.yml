@@ -1,0 +1,111 @@
+---
+# tasks file for roles/attackBox
+- name: Create .ssh directory
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: kali
+  loop:
+    - /home/kali/.ssh
+    - /home/kali/tools
+
+- name: Generate SSH key pair
+  ansible.builtin.openssh_keypair:
+    path: /home/kali/.ssh/id_rsa
+    type: rsa
+    size: 4096
+    state: present
+    owner: "kali"
+    mode: '0600'
+    force: true
+
+- name: Copy private key to /root/.ssh/id_rsa
+  ansible.builtin.copy:
+    src: /home/kali/.ssh/id_rsa
+    dest: /root/.ssh/id_rsa
+    owner: root
+    group: root
+    mode: '0600'
+    remote_src: true
+
+- name: Fetch public key from kali
+  ansible.builtin.fetch:
+    src: /home/kali/.ssh/id_rsa.pub
+    dest: /tmp/kali_id_rsa.pub
+    flat: yes
+
+- name: Copy 'callMe.sh' file
+  ansible.builtin.copy:
+    src: files/callMe.sh
+    dest: /usr/local/bin/
+    owner: "kali"
+    group: "kali"
+    mode: '0555'
+
+      #- name: Add SSH aliases for ssh tom
+      #  ansible.builtin.lineinfile:
+      #    path: "/root/.bashrc"
+      #    line: "alias {{ item }}_r='ssh root@{{ item }}'"
+      #    create: true
+      #    state: present
+      #    insertafter: EOF
+      #    regexp: "^alias {{ item }}_r="
+      #    owner: "root"
+      #    group: "root"
+      #    mode: '0644'
+      #  loop:
+      #    - tom
+      #    - lamp
+      #    - nginx
+
+# https://www.kali.org/blog/new-kali-archive-signing-key/ 
+- name: update keyring file
+  ansible.builtin.get_url:
+    url: "https://archive.kali.org/archive-keyring.gpg"
+    dest: "/usr/share/keyrings/kali-archive-keyring.gpg"
+    mode: '0644'
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+
+- name: Install utilities
+  ansible.builtin.package:
+    name: 
+      - proxychains4
+      - git
+      - python3
+      - python3-venv
+      - python3-packaging
+      - socat
+      - iptables
+    state: present
+
+- name: Install other tools
+  ansible.builtin.include_tasks:
+    file: "{{ item }}"
+  loop:
+    - install_chisel.yml
+    - install_gost.yml
+    - install_ligolo.yml
+    - install_neo-reGeorg.yml
+    - install_pivotnacci.yml
+    - install_ssf.yml
+    - install_sshuttle.yml
+    - install_suo5.yml
+
+- name: Recursively change ownership of a directory
+  ansible.builtin.file:
+    path: /home/kali/tools
+    state: directory
+    recurse: yes
+    owner: kali
+
+- name: Allow kali to do everything
+  community.general.sudoers:
+    name: kali_power
+    state: present
+    user: kali
+    runas: root
+    commands: ALL
+

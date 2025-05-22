@@ -1,0 +1,22 @@
+# Install Neo-reGeorg
+- name: Install Neo-reGeorg requirements
+  ansible.builtin.pip:
+    name:
+      - requests
+      - requests[socks]
+      - packaging
+    virtualenv: /opt/virtual_environments/neo-reGeorg
+    virtualenv_site_packages: yes
+    virtualenv_command: "python3 -m venv"
+- name: Install the Python tool in the virtual environment
+  ansible.builtin.git:
+    repo: 'https://github.com/L-codes/Neo-reGeorg.git'
+    dest: /home/kali/tools/Neo-reGeorg
+    force: yes
+
+- name: Replace string to execute
+  ansible.builtin.lineinfile:
+    path: /home/kali/tools/Neo-reGeorg/neoreg.py
+    search_string: '#!/usr/bin/env python'
+    line: '#!/opt/virtual_environments/neo-reGeorg/bin/python3'
+

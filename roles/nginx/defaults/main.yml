@@ -1,0 +1,3 @@
+---
+# defaults file for prepare_jump
+motd_message : example_message

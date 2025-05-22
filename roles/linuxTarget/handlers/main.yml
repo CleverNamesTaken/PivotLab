@@ -1,0 +1,5 @@
+---
+# handlers file for roles/target1
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
