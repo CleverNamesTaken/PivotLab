@@ -19,14 +19,6 @@
   <p align="center">
 This range is intended to be an exercise for cybersecurity professionals to gain exposure to pivoting tools and tradecraft.  There are many other tools out there, and this is surely just hitting some of the wavetops for some of the most popular tools.
 
-Broadly speaking, this lab includes the use of three different types of tools:
-
-- live off the land tools
-- non-native binaries
-- webshells
-
-The lab consists of three jump boxes with different web servers, and two "target" machines for exploitation.  All of the machines except for one of the targets is Debian-based.  The three web servers include a tomcat server for jsp webshells, an apache server for php webshells, and an nginx server.  All of the machines can be administered through the ssh key provided on the kali attack box as the root user, including the two "target" machines.
-
     <br />
     <a href="https://github.com/CleverNamesTaken/PivotLab"><strong>Explore the docs »</strong></a>
     <br />
@@ -72,6 +64,15 @@ The lab consists of three jump boxes with different web servers, and two "target
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
+
+Broadly speaking, this lab includes the use of three different types of tools:
+
+- live off the land tools
+- non-native binaries
+- webshells
+
+The lab consists of three jump boxes with different web servers, and two "target" machines for exploitation.  All of the machines except for one of the targets is Debian-based.  The three web servers include a tomcat server for jsp webshells, an apache server for php webshells, and an nginx server.  All of the machines can be administered through the ssh key provided on the kali attack box as the root user, including the two "target" machines.
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
