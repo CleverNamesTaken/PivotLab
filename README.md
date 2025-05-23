@@ -74,14 +74,14 @@ This guide assumes the user already has Promox and Ludus installed.
 2. Add the necessary roles
    ```sh
    cd PivotLab
-   ludus ansbile role add -d roles/attackBox/
-   ludus ansbile role add -d roles/fvarovillodres.lamp/
-   ludus ansbile role add -d roles/lamp/
-   ludus ansbile role add -d roles/linuxTarget/
-   ludus ansbile role add -d roles/nginx/
-   ludus ansbile role add -d roles/tom/
-   ludus ansbile role add -d roles/tomcat/
-   ludus ansbile role add -d roles/windowsTarget/
+   ludus ansible role add -d roles/attackBox/
+   ludus ansible role add -d roles/fvarovillodres.lamp/
+   ludus ansible role add -d roles/lamp/
+   ludus ansible role add -d roles/linuxTarget/
+   ludus ansible role add -d roles/nginx/
+   ludus ansible role add -d roles/tom/
+   ludus ansible role add -d roles/tomcat/
+   ludus ansible role add -d roles/windowsTarget/
    ```
 
 3. Import the range config file
