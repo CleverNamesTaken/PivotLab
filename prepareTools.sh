@@ -4,7 +4,7 @@
 
 echo '[+] Installing tools with apt'
 sudo apt update
-sudo apt install -y proxychains4 git python3 python3-venv python3-packaging socat iptables wget tar ssh sshuttle
+sudo apt install -y proxychains4 git python3 python3-venv python3-packaging socat iptables wget tar ssh sshuttle unzip
 
 # Install the other tools
 
@@ -14,6 +14,7 @@ echo '[+] Installing golang'
 wget https://go.dev/dl/go1.24.3.linux-amd64.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.24.3.linux-amd64.tar.gz
 echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee /etc/profile
+rm go1.24.3.linux-amd64.tar.gz
 
 ## Install chisel
 
@@ -26,6 +27,7 @@ echo '[+] Installing gost'
 mkdir -p ~/tools/gost
 wget https://github.com/ginuerzh/gost/releases/download/v2.12.0/gost_2.12.0_linux_amd64.tar.gz
 tar -xzf gost_2.12.0_linux_amd64.tar.gz -C ~/tools/gost
+rm gost_2.12.0_linux_amd64.tar.gz
 
 ## Install ligolo
 echo '[+] Installing ligolo-ng'
@@ -34,8 +36,11 @@ wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8/ligolo-ng_age
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8/ligolo-ng_agent_0.8_windows_amd64.zip
 wget https://github.com/nicocha30/ligolo-ng/releases/download/v0.8/ligolo-ng_proxy_0.8_linux_amd64.tar.gz
 tar -xzf ligolo-ng_agent_0.8_linux_amd64.tar.gz -C ~/tools/ligolo-ng
-mv ligolo-ng_agent_0.8_windows_amd64.zip ~/tools/ligolo-ng
+unzip -o ligolo-ng_agent_0.8_windows_amd64.zip -d ~/tools/ligolo-ng
 tar -xzf ligolo-ng_proxy_0.8_linux_amd64.tar.gz -C ~/tools/ligolo-ng
+rm ligolo-ng_proxy_0.8_linux_amd64.tar.gz
+rm ligolo-ng_agent_0.8_linux_amd64.tar.gz
+rm ligolo-ng_agent_0.8_windows_amd64.zip
 
 ## Install neo-reGeorg
 echo '[+] Installing neo-reGeorg'
@@ -49,8 +54,12 @@ git clone https://github.com/blackarrowsec/pivotnacci.git ~/tools/pivotnacci
 ## Install ssf
 echo '[+] Installing ssf'
 mkdir -p ~/tools/ssf
-wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-win-x86_64-3.0.0.zip -O ~/tools/ssf/ssf-win-x86_64-3.0.0.zip
-wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-linux-x86_64-3.0.0.zip -O ~/tools/ssf/ssf-linux-x86_64-3.0.0.zip
+wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-win-x86_64-3.0.0.zip
+unzip ssf-win-x86_64-3.0.0.zip -d ~/tools/ssf
+rm ssf-win-x86_64-3.0.0.zip
+wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-linux-x86_64-3.0.0.zip 
+unzip ssf-linux-x86_64-3.0.0.zip -d  ~/tools/ssf/
+rm ssf-linux-x86_64-3.0.0.zip
 
 #Need to get config.json
 
