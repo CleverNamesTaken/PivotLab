@@ -18,17 +18,8 @@
 
   <p align="center">
 This range is intended to be an exercise for cybersecurity professionals to gain exposure to pivoting tools and tradecraft.  There are many other tools out there, and this is surely just hitting some of the wavetops for some of the most popular tools.
+</p>
 
-    <br />
-    <a href="https://github.com/CleverNamesTaken/PivotLab"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/CleverNamesTaken/PivotLab">View Demo</a>
-    &middot;
-    <a href="https://github.com/CleverNamesTaken/PivotLab/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
-    &middot;
-    <a href="https://github.com/CleverNamesTaken/PivotLab/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
-  </p>
 </div>
 
 
