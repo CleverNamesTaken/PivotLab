@@ -72,11 +72,12 @@ I'll just cover four features of SSH:
 
 ### Modify /etc/ssh/sshd_config
 
-[] check this
-Default sshd configurations may not allow you to proxy through the way that you would like.  Here in this lab, these are the commands that you should run to get the ssh servers ready for pivoting:
+Default sshd configurations may not allow you to proxy through the way that you would like.  Run the following commands as root to do *most* of the forwarding you would need to do with SSH:
 
+```
 sed -i 's:GatewayPorts no:GatewayPorts yes:' /etc/ssh/sshd_config
 sed -i 's:AllowForwarding no:AllowForwarding yes:' /etc/ssh/sshd_config
+```
 
 
 ### ProxyJumps
@@ -93,8 +94,11 @@ ssh -J root@tom,root@lamp root@nginx hostname
 We landed on ngnix through this route:
 
 attackBox
+
 -> tom
+
 --> lamp
+
 ---> nginx
 
 From the perspective of nginx, lamp connected to it.  lamp also does not know about your attackbox, just that tom connected to it.
@@ -111,7 +115,8 @@ Currently this allows the addition of port forwardings using the -L, -R and -D o
 [[ SSH~EscapeCharacters ]]*
 ssh root@tom -o EnableEscapeCommandline=yes
 ```
-	#If this fails, then you are probably trying to tunnel from within another existing ssh session.  Each session needs to have EnableEscapeCommandline=yes or this will fail
+
+If this fails, then you are probably trying to tunnel from within another existing ssh session.  Each session needs to have EnableEscapeCommandline=yes or this will fail
 
 Then if you realize you need to add more port forwards for the SSH connection instead of closing out the SSH session and starting again, you can drop into a pseudo terminal by typing `<ENTER>~C`.
 
@@ -119,7 +124,7 @@ Then if you realize you need to add more port forwards for the SSH connection in
 
 This requires root access on the client and the server, and the ability to create iptables rules on the server
 
-[This script](https://raw.githubusercontent.com/trustedsec/tap/refs/heads/master/scripts/ssh-tunnel.sh) used to work, but we are going to do it manually
+[This script] from TrustedSec (https://raw.githubusercontent.com/trustedsec/tap/refs/heads/master/scripts/ssh-tunnel.sh) used to work, but we are going to do it manually because it is a little broken for modern Linux systems.
 
 #### Prepare server
 
@@ -302,10 +307,12 @@ Now we want to forward traffic from a local port so that it reaches the target
 socat -d -d TCP-LISTEN:9999,fork,reuseaddr OPENSSL-CONNECT:nginx:3030,cert=server.pem,cafile=server.pem,verify=0
 ```
 
+
 ```
 [[ Socat~RemoteForward ]]
- ssh root@nginx socat -d -d OPENSSL-LISTEN:3030,cert=server.pem,cafile=server.crt,verify=0 tcp-connect:linux:80
-	getent hosts linux
+ssh root@nginx socat -d -d OPENSSL-LISTEN:3030,cert=server.pem,cafile=server.crt,verify=0 tcp-connect:linux:80
+```
+
 
 ```
 [[ Socat~Call ]]
@@ -328,7 +335,6 @@ First we setup a tls server
 ```
 [[ Socat~Listener ]]
 sudo socat -d -d OPENSSL-LISTEN:8888,fork,reuseaddr,cert=server.pem,cafile=server.pem,verify=1 TUN:10.13.37.2/30,up
-
 ```
 
 Next we call into that server
