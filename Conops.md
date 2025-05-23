@@ -694,7 +694,6 @@ cat ca.crt >> ca_int.crt
 
 openssl x509 -extfile extfile.txt -extensions v3_req_p -req -sha1 -days 3650 -CA ca.crt -CAkey ca.key -CAcreateserial -in certificate.csr -out certificate.crt
 cat ca.crt >> certificate.crt
-```
 
 cp ../config.json .
 sed -i 's:_path:_buffer:' config.json
