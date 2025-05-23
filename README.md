@@ -51,8 +51,6 @@ This range is intended to be an exercise for cybersecurity professionals to gain
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
-
 Broadly speaking, this lab includes the use of three different types of tools:
 
 - live off the land tools
@@ -117,6 +115,7 @@ Feel free to test any number of pivoting tools you'd like.  The `Conops.md` file
 - Neo-reGeorg
 - pivotnacci
 
+ssh to 10.<RANGE_NUMBER>.20.201 with the credentials `kali:kali`, and check out the `~/tools` directory for pre-installed tools.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
