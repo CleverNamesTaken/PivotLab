@@ -79,6 +79,7 @@
       - python3-packaging
       - socat
       - iptables
+      - metasploit-framework
     state: present
 
 - name: Install other tools
