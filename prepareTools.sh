@@ -49,12 +49,12 @@ git clone https://github.com/blackarrowsec/pivotnacci.git ~/tools/pivotnacci
 ## Install ssf
 echo '[+] Installing ssf'
 mkdir -p ~/tools/ssf
-wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-win-x86_64-3.0.0.zip ~/tools/ssf/ssf-win-x86_64-3.0.0.zip
-wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-linux-x86_64-3.0.0.zip ~/tools/ssf/ssf-linux-x86_64-3.0.0.zip
+wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-win-x86_64-3.0.0.zip -O ~/tools/ssf/ssf-win-x86_64-3.0.0.zip
+wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-linux-x86_64-3.0.0.zip -O ~/tools/ssf/ssf-linux-x86_64-3.0.0.zip
 
 #Need to get config.json
 
 ## Install suo5
 echo '[+] Installing suo5'
 git clone https://github.com/zema1/suo5.git ~/tools/suo5
-wget https://github.com/zema1/suo5/releases/download/v1.3.1/suo5-linux-amd64 ~/tools/suo5/suo5-linux-amd64
+wget https://github.com/zema1/suo5/releases/download/v1.3.1/suo5-linux-amd64 -O ~/tools/suo5/suo5-linux-amd64
