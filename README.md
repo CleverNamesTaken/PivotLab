@@ -114,6 +114,10 @@ Feel free to test any number of pivoting tools you'd like.  The `Conops.md` file
 
 ssh to 10.<RANGE_NUMBER>.20.201 with the credentials `kali:kali`, and check out the `~/tools` directory for pre-installed tools.
 
+If you are like me and prefer your own attack box, then just run `prepareTools.sh` to install the tools on a different platform.
+
+See `Conops.md` for how these tools can be deployed.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
