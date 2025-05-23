@@ -30,9 +30,6 @@ This range is intended to be an exercise for cybersecurity professionals to gain
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -68,17 +65,6 @@ The lab consists of three jump boxes with different web servers, and two "target
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
-### Built With
-
-* [![Proxmox][Next.js]][Next-url]
-* [![Ludus][React.js]][React-url]
-* [![Ansible][Vue.js]][Vue-url]
-* [![Chocolatey][Angular.io]][Angular-url]
-* [![Vulhub][Svelte.dev]][Svelte-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Getting Started
 
@@ -181,9 +167,9 @@ Project Link: [https://github.com/CleverNamesTaken/PivotLab](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Eric (Bad Sector Labs](https://gitlab.com/badsectorlabs) for all the amazing work on Ludus.
-* opsdisk and the incredible (Cyber Plumber's Handbook)[https://github.com/opsdisk/the_cyber_plumbers_handbook]
-* fvarovillodres for his development of the (ansible-role for installing a LAMP stack)[https://github.com/fvarovillodres/ansible-role-lamp]
+* [Eric (Bad Sector Labs)](https://gitlab.com/badsectorlabs) for all the amazing work on Ludus.
+* opsdisk and the incredible [Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook)
+* fvarovillodres for his development of the [ansible-role for installing a LAMP stack](https://github.com/fvarovillodres/ansible-role-lamp)
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
