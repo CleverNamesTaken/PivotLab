@@ -82,6 +82,7 @@ This guide assumes the user already has Promox and Ludus installed.
    ludus ansible role add -d roles/tom/
    ludus ansible role add -d roles/tomcat/
    ludus ansible role add -d roles/windowsTarget/
+   ludus ansible role add badsectorlabs.ludus_vulhub
    ```
 
 3. Import the range config file
