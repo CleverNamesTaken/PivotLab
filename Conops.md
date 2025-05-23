@@ -60,7 +60,7 @@ cat /tmp/PROOF
 * These tools are capable of creating a tun interface that would require root privileges, but this is not required for their effective use as pivoting tools.
 ```
 
-The goal is provide basic functionality of each tool, although there are certainly many more advanced features that will be left to the reader to explore.  Iptables will be an exception -- we will demontrate simple port forwarding, and then use the nat table for more advanced pivoting as a part of other tools.  If you are unfamiliar with these tools, I suggest doing at least ssh, iptables, and socat, and then jumping around to whatever seems interesting.
+The goal is provide basic functionality of each tool, although there are certainly many more advanced features that will be left to the reader to explore.  Iptables will be an exception -- we will demonstrate simple port forwarding, and then use the nat table for more advanced pivoting as a part of other tools.  If you are unfamiliar with these tools, I suggest doing at least ssh, iptables, and socat, and then jumping around to whatever seems interesting.
 
 ## ssh
 
@@ -351,7 +351,7 @@ ip a
 ping -c 1 10.13.37.2
 ```
 
-Now that we have our tun interface, we have to set up our iptables around routing as we did for the ssh tun interface
+Now that we have our tun interface, we have to set up our iptables and routing as we did for the ssh tun interface.
 
 ## ligolo
 
@@ -530,7 +530,7 @@ cat /tmp/PROOF
 
 #### Prepare iptables rules and forwarding
 
-Now that we have our tun interface, we have to set up our iptables around routing as we did for the ssh tun interface
+Now that we have our tun interface, we have to set up our iptables and routing as we did for the ssh tun interface.
 
 #### Clean up
 
@@ -722,7 +722,7 @@ nc 127.0.0.1 4444
 
 ## sshuttle
 
-While I think sshuttle is a cool tool, I do not understand all the networking going on under the hood and tools that make changes to my iptables rules makes me uncomfortable.  The benefits of this tool is its simplicity in use, and its small precense on the device to pivot through -- you just need an ssh connection and python on the box.  The major drawback is that if it does not work, it will be painful to troubleshoot.
+While I think sshuttle is a cool tool, I do not understand all the networking going on under the hood and tools that make changes to my iptables rules makes me uncomfortable.  The benefits of this tool is its simplicity in use, and its small presence on the device to pivot through -- you just need an ssh connection and python on the box.  The major drawback is that if it does not work, it will be painful to troubleshoot.
 
 ```
 [[ sshuttle~connect ]]*
@@ -785,7 +785,7 @@ The linux machine at 10.X.22.50 is vulnerable to CVE-2024-47176, a UDP-based exp
 
 It is also vulnerable to CVE-2025-32433 on port 2222. CVE-2025-32433 is an unauthenticated RCE against the SSH server for Erlang/OTP.
 
-Both vulnerabilities are hosted in a docker container through Vulhub.
+Both vulnerabilities are hosted in a docker container through Vulhub, so landing in the docker container might not be all that fun for you.  Feel free to ssh in as root with the key on the kali machine at `/home/kali/.ssh/id_rsa`.
 
 #### Windows exploitation
 
