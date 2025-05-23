@@ -19,7 +19,7 @@ echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee /etc/profile
 
 echo '[+] Installing chisel'
 mkdir -p ~/tools/chisel
-git clone https://github.com/jpillora/chisel.git ~/tools/
+git clone https://github.com/jpillora/chisel.git ~/tools/chisel
 
 ## Install gost
 echo '[+] Installing gost'
@@ -39,12 +39,12 @@ tar -xzf ligolo-ng_proxy_0.8_linux_amd64.tar.gz -C ~/tools/ligolo-ng
 
 ## Install neo-reGeorg
 echo '[+] Installing neo-reGeorg'
-git clone https://github.com/L-codes/Neo-reGeorg.git ~/tools/
+git clone https://github.com/L-codes/Neo-reGeorg.git ~/tools/Neo-reGeorg
 
 
 ## Install pivotnacci
 echo '[+] Installing pivotnacci'
-git clone https://github.com/blackarrowsec/pivotnacci.git ~/tools/
+git clone https://github.com/blackarrowsec/pivotnacci.git ~/tools/pivotnacci
 
 ## Install ssf
 echo '[+] Installing ssf'
@@ -56,5 +56,5 @@ wget https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-li
 
 ## Install suo5
 echo '[+] Installing suo5'
-git clone https://github.com/zema1/suo5.git ~/tools/
+git clone https://github.com/zema1/suo5.git ~/tools/suo5
 wget https://github.com/zema1/suo5/releases/download/v1.3.1/suo5-linux-amd64 ~/tools/suo5/suo5-linux-amd64
