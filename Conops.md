@@ -66,7 +66,7 @@ The goal is provide basic functionality of each tool, although there are certain
 
 We will begin with ssh because it is the bread and butter of how Linux systems are administered, and indeed it will be how we move tools around for this lab as well.
 
-Recommend checking out [this](https://github.com/opsdisk/the_cyber_plumbers_handbook) resource, which has a great deal of excellent information on how to master SSH tunnels.  For may beginners, the hard part is remember the flags for getting what you want.  For me, I just remember `-L` means you are opening a port Locally, whereas `-R` means you are opening a port on the Remote host.
+Recommend checking out [the Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook), which has a great deal of excellent information on how to master SSH tunnels.  For many beginners, the hard part is remember the flags for getting what you want.  For me, I just remember `-L` means you are opening a port Locally, whereas `-R` means you are opening a port on the Remote host.
 
 I'll just cover four features of SSH:
 
