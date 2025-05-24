@@ -19,7 +19,7 @@ Whether you use tmux, terminator, zellij, wezterm or something else, I highly re
 
 ## Objective
 
-Hit the targets through whatever weird tunnels you like.  The linux target at 10.X.22.50 has a web server that will hit you back on the IP, port and protocol of your choosing.
+Hit the targets through whatever weird tunnels you like.  The linux target at 10.X.22.50 has a web server that will attempt to call back to you on the IP, port and protocol of your choosing.  If you use the lab-provided kali machine or run the the `prepareTools.sh` script, you will have a bash script called `callMe.sh. in your path that will make the POST request for you.  If you choose not to use script, you can also make the request by visiting http://10.X.22.50 in a browser.
 
 As a super lame example with no pivoting, do this:
 
@@ -66,9 +66,9 @@ The goal is provide basic functionality of each tool, although there are certain
 
 We will begin with ssh because it is the bread and butter of how Linux systems are administered, and indeed it will be how we move tools around for this lab as well.
 
-Recommend checking out [the Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook), which has a great deal of excellent information on how to master SSH tunnels.  For many beginners, the hard part is remember the flags for getting what you want.  For me, I just remember `-L` means you are opening a port Locally, whereas `-R` means you are opening a port on the Remote host.
+I recommend checking out [the Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook), which has a great deal of excellent information on how to master SSH tunnels.  For basic remembering basic syntax, I recall that the `-L` flag means you are opening a port *L*ocally, whereas `-R` means you are opening a port on the *R*emote host.
 
-I'll just cover four features of SSH:
+We will just cover four features of SSH:
 
 ### Modify /etc/ssh/sshd_config
 
@@ -76,7 +76,9 @@ Default sshd configurations may not allow you to proxy through the way that you 
 
 ```
 sed -i 's:GatewayPorts no:GatewayPorts yes:' /etc/ssh/sshd_config
+    #This will allow you to use the -R port to open a port on the ssh server that can listen on non-loopback interfaces.
 sed -i 's:AllowForwarding no:AllowForwarding yes:' /etc/ssh/sshd_config
+    #This will allow you to forward traffic.  If you are not able to forward traffic, you will not be able to pivot with SSH.
 ```
 
 
@@ -107,7 +109,7 @@ From the perspective of nginx, lamp connected to it.  lamp also does not know ab
 
 Prior to initiating an interactive ssh session, add the flag `-o EnableEscapeCommandline=yes` to your command.
 
-As the man page says:
+Again stealing from the man page:
 
 Currently this allows the addition of port forwardings using the -L, -R and -D options (see above).  It also allows the cancellation of existing port-forwardings with -KL[bind_address:]port for local, -KR[bind_address:]port for remote and -KD[bind_address:]port for dynamic port-forwardings.  
 
@@ -116,7 +118,7 @@ Currently this allows the addition of port forwardings using the -L, -R and -D o
 ssh root@tom -o EnableEscapeCommandline=yes
 ```
 
-If this fails, then you are probably trying to tunnel from within another existing ssh session.  Each session needs to have EnableEscapeCommandline=yes or this will fail
+If this fails, check if you are trying to SSH within an SSH session.  Nested SSH sessions means that the terminal will try to do only the first session. 
 
 Then if you realize you need to add more port forwards for the SSH connection instead of closing out the SSH session and starting again, you can drop into a pseudo terminal by typing `<ENTER>~C`.
 
@@ -260,8 +262,8 @@ First we have to start off with generating certificates, because we do not like 
 
 ```
 [[ Socat~certs ]]*
-mkdir socat
-cd socat
+mkdir -p tools/socat
+cd tools/socat
 openssl genrsa -out server.key 2048
 openssl req -new -key server.key -x509 -days 365 -out server.crt -subj '/C=IN/ST=State/L=Local/O=Company/OU=IT/CN=foo.bar'
 cat server.key server.crt > server.pem
@@ -272,7 +274,7 @@ scp server.pem root@nginx:
 
 ### Remote port forwarding
 
-Next we will start the remote socat listener.  We listen for a callback on ngix on port 2010, and then we will callback to our attack machine on an encrypted tcp port 4444.
+Next we will start the remote socat listener.  We listen for a callback on nginx on port 2010, and then we will callback to our attack machine on an encrypted tcp port 4444.
 
 ```
 [[ Socat~RemoteForward ]]*
@@ -283,7 +285,7 @@ Now we set up an encrypted listener on port 8888, and relay the traffic to out P
 
 ```
 [[ Socat~Listener ]]*
-cd socat
+cd tools/socat
 socat -d -u openssl-listen:4444,reuseaddr,fork,cert=server.pem,cafile=server.crt open:/tmp/PROOF,create,append
 ```
 
@@ -812,3 +814,4 @@ root:PivotLab1!
 - https://blog.raw.pm/en/state-of-the-art-of-network-pivoting-in-2019/
 - https://latest.gost.run/en/
 - https://gost.run/en/tutorials/
+- https://www.sans.org/blog/using-the-ssh-konami-code-ssh-control-sequences/

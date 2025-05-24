@@ -54,31 +54,17 @@
   win_copy:
     src: "/tmp/kali_id_rsa.pub"
     dest: "C:\\ProgramData\\ssh\\administrators_authorized_keys"
+- name: Ensure .ssh directory exists
+  ansible.windows.win_file:
+    path: 'C:\Users\root\.ssh'
+    state: directory
 
+#Tried to do this with ansible roles, but failed too many times.
 - name: Set permissions on authorized_keys
-  win_acl:
-    path: "C:\\ProgramData\\ssh\\administrators_authorized_keys"
-    rights: "FullControl"
-    user: "root"
-    type: "allow"
-
-- name: Install disabledefender-winconfig v0.0.1
-  win_chocolatey:
-    name: disabledefender-winconfig
-    state: present
+  win_command: 'icacls C:\ProgramData\ssh\administrators_authorized_keys /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"'
 
 - name: Disable realtime monitoring
   win_shell: Set-MpPreference -DisableRealtimeMonitoring $true
-
-      #- name: Disable Real-Time Protection via Registry
-      #ansible.windows.win_regedit:
-      #path: HKLM:\SOFTWARE\Policies\Microsoft\Windows Defender
-      #name: DisableRealtimeMonitoring
-      #data: 1
-      #type: dword
-
-      #- name: Reboot the machine to complete disable of real-time protection
-      #ansible.windows.win_reboot:
 
 - name: "Check if Unified Remote already installed"
   ansible.windows.win_stat:
@@ -123,4 +109,18 @@
     name: WinServer
     state: started
 
+
+- name: Copy PowerShell script to target
+  ansible.windows.win_copy:
+    src: disable_defender.ps1
+    dest: C:\Windows\Temp\disable_defender.ps1
+
+- name: Install service with NSSM to run PowerShell script
+  win_command: >
+    nssm install KillDefender  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoProfile -File C:\\Windows\\Temp\\disable_defender.ps1"
+
+- name: Start the service
+  ansible.windows.win_service:
+    name: KillDefender
+    state: started
 
