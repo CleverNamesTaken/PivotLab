@@ -119,8 +119,8 @@
   win_command: >
     nssm install KillDefender  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoProfile -File C:\\Windows\\Temp\\disable_defender.ps1"
 
-- name: Start the service
-  ansible.windows.win_service:
-    name: KillDefender
-    state: started
-
+    #- name: Start the service
+    #  ansible.windows.win_service:
+    #    name: KillDefender
+    #    state: started
+    #

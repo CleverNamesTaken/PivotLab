@@ -1,8 +1,3 @@
-# Based on https://github.com/xbufu/ansible-role-ad_gpos/blob/main/tasks/disable_defender.yml
-# MIT License
----
-- name: Create GPO to disable Windows Defender
-  ansible.windows.win_shell: |
     Import-Module GroupPolicy -Verbose:$false
 
     $GPOName = "Disable Windows Defender"
