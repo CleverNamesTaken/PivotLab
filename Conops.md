@@ -241,11 +241,11 @@ The concept here is to avoid opening up new ports, but being able to access new 
 
 ```
 [[ IpTables~PortStealing ]]*
-ssh root@nginx 'iptables -t nat -I PREROUTING -p tcp --sport 12345 --dport 22 -j DNAT --to-destination 10.X.2.20.220:22'
-ssh root@nginx 'iptables -t nat -I POSTROUTING -p tcp --sport 12345 -j MASQUERADE'
-ssh root@nginx 'sysctl -w net.ipv4.ip_forward=1'
+ssh root@tom 'iptables -t nat -I PREROUTING -p tcp --sport 12345 --dport 22 -j DNAT --to-destination 10.X.2.20.221:22'
+ssh root@tom 'iptables -t nat -I POSTROUTING -p tcp --sport 12345 -j MASQUERADE'
+ssh root@tom 'sysctl -w net.ipv4.ip_forward=1'
 
-socat tcp-listen:5055,fork,reuseaddr TCP-connect:nginx:22,sourceport=12345 &
+socat tcp-listen:5055,fork,reuseaddr TCP-connect:tom:22,sourceport=12345 &
 	#This command will open up port 5055 and bend incoming traffic to nginx on port 22 with a sourceport of 12345
 	#The iptables rules we have set up matches on the destination port and sends it off to lamp
 
