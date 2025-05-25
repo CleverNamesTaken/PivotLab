@@ -54,10 +54,6 @@
   win_copy:
     src: "/tmp/kali_id_rsa.pub"
     dest: "C:\\ProgramData\\ssh\\administrators_authorized_keys"
-- name: Ensure .ssh directory exists
-  ansible.windows.win_file:
-    path: 'C:\Users\root\.ssh'
-    state: directory
 
 #Tried to do this with ansible roles, but failed too many times.
 - name: Set permissions on authorized_keys
