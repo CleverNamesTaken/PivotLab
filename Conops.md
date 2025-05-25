@@ -288,6 +288,8 @@ Now we set up an encrypted listener on port 8888, and relay the traffic to out P
 [[ Socat~Listener ]]*
 cd tools/socat
 socat -d -u openssl-listen:4444,reuseaddr,fork,cert=server.pem,cafile=server.crt open:/tmp/PROOF,create,append
+    #if this fails, probably need to kill what else is listening on port 4444
+    pkill socat
 ```
 
 Last, we make a call to the linux target to callback to nginx, then check our proof file to ensure we got the callback.
@@ -299,6 +301,14 @@ cat /tmp/PROOF
 callMe.sh linux 80 nginx 2010 tcp
 cat /tmp/PROOF
 	#Now we have a callback that we caught on nginx
+```
+
+Now clean up
+
+```
+[[ Socat~Call ]]*
+pkill socat
+ssh root@nginx pkill socat
 ```
 
 ### Local port forwarding
@@ -351,7 +361,7 @@ After calling in, we have a tun interface on each machine that can communicate w
 ```
 [[ Socat~Call ]]
 ip a
-ping -c 1 10.13.37.2
+ping -c 1 10.13.37.1
 ```
 
 Now that we have our tun interface, we have to set up our iptables and routing as we did for the ssh tun interface.
