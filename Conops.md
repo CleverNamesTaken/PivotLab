@@ -171,7 +171,7 @@ ip a
 ssh -Nf -w0:0 root@lamp
     #In this example, we did 0:0 because we connected tun0 from the local side to tun0 on the remote side.  Adjust accordingly
     Also, keep track of this PID, because you will need it to close 
-SSH_TUN=$!
+echo $! |tee /tmp/tun.pid
     #We need to store the PID of this tunnel to close it later.
 
 ping -c1 192.168.37.2
@@ -209,12 +209,13 @@ This cleanup does not include the configuration changes to net.ipv4.ip_forwardin
 ```
 [[ SSH~Tun ]]
 ip route del 10.X.22.0/24 via 192.168.37.2 dev tun0
-kill -9 $SSH_TUN
+kill -9 $(cat /tmp/tun.pid)
 ip tuntap del dev tun0 mode tun 
 
 ssh root@lamp "iptables -t nat -D POSTROUTING -s 192.168.37.1 -j MASQUERADE"
 ssh root@lamp "iptables -D FORWARD -s 192.168.37.1 -j ACCEPT"
-ssh root@lamp "ip tuntap add dev tun0 mode tun"
+ssh root@lamp "ip tuntap del dev tun0 mode tun"
+ssh root@lamp "ip a" | grep tun
 ```
 
 ## iptables
@@ -241,7 +242,7 @@ The concept here is to avoid opening up new ports, but being able to access new 
 
 ```
 [[ IpTables~PortStealing ]]*
-ssh root@tom 'iptables -t nat -I PREROUTING -p tcp --sport 12345 --dport 22 -j DNAT --to-destination 10.X.2.20.221:22'
+ssh root@tom 'iptables -t nat -I PREROUTING -p tcp --sport 12345 --dport 22 -j DNAT --to-destination 10.X.20.221:22'
 ssh root@tom 'iptables -t nat -I POSTROUTING -p tcp --sport 12345 -j MASQUERADE'
 ssh root@tom 'sysctl -w net.ipv4.ip_forward=1'
 
