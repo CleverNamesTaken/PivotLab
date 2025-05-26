@@ -90,7 +90,7 @@
     - install_gost.yml
     - install_ligolo.yml
     - install_neo-reGeorg.yml
-    - install_pivotnacci.yml
+    - install_weevely.yml
     - install_ssf.yml
     - install_sshuttle.yml
     - install_suo5.yml

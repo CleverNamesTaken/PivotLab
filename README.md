@@ -110,7 +110,7 @@ Feel free to test any number of pivoting tools you'd like.  The `Conops.md` file
 - sshuttle
 - suo5
 - Neo-reGeorg
-- pivotnacci
+- [weevely3](https://github.com/epinna/weevely3.git)
 
 ssh to 10.<RANGE_NUMBER>.20.201 with the credentials `kali:kali`, and check out the `~/tools` directory for pre-installed tools.
 

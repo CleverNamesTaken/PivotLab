@@ -47,9 +47,9 @@ echo '[+] Installing neo-reGeorg'
 git clone https://github.com/L-codes/Neo-reGeorg.git ~/tools/Neo-reGeorg
 
 
-## Install pivotnacci
-echo '[+] Installing pivotnacci'
-git clone https://github.com/blackarrowsec/pivotnacci.git ~/tools/pivotnacci
+## Install weeveley
+echo '[+] Installing weeveley'
+git clone https://github.com/epinna/weevely3.git ~/tools/weeveley3
 
 ## Install ssf
 echo '[+] Installing ssf'

