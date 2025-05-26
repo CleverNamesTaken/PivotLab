@@ -103,13 +103,13 @@ Feel free to test any number of pivoting tools you'd like.  The `Conops.md` file
 - ssh
 - iptables
 - socat
-- ligolo
-- gost
-- Chisel
-- SSF
-- sshuttle
-- suo5
-- Neo-reGeorg
+- [ligolo-ng](https://github.com/nicocha30/ligolo-ng)
+- [gost](https://github.com/ginuerzh/gost)
+- [Chisel](https://github.com/jpillora/chisel)
+- [SSF](https://securesocketfunneling.github.io/ssf/#home)
+- [sshuttle](https://github.com/sshuttle/sshuttle)
+- [suo5](https://github.com/zema1/suo5)
+- [Neo-reGeorg](https://github.com/L-codes/Neo-reGeorg)
 - [weevely3](https://github.com/epinna/weevely3.git)
 
 ssh to 10.<RANGE_NUMBER>.20.201 with the credentials `kali:kali`, and check out the `~/tools` directory for pre-installed tools.

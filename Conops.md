@@ -9,6 +9,14 @@ If you'd prefer not to use the provided kali machine, then I'd recommend the fol
 
 Additionally, wherever you see the term "attackBox" listed in this walkthrough, know that you will have to supply your own attackBox IP address.
 
+## Creds for the range boxes
+
+The ssh key at `/home/kali/.ssh/id_rsa` on the kali machine provides root access to all of the other machines in the network.
+
+Additionally, the `debian` user on all the Linux machines has a password of `debian` and full sudo.
+
+The `root` user on the Windows victim machine has a password of `PivotLab1!`.
+
 ## Notation
 
 ### Terminal tags
