@@ -8,6 +8,7 @@
       - PySocks
       - pyOpenSSL
       - setuptools
+      - telnetlib3
     virtualenv: /opt/virtual_environments/weevely
     virtualenv_site_packages: yes
     virtualenv_command: "python3 -m venv"
@@ -23,3 +24,8 @@
     search_string: '#!/usr/bin/env python'
     line: '#!/opt/virtual_environments/weevely/bin/python3'
 
+- name: Replace string to execute
+  ansible.builtin.lineinfile:
+    path: /home/kali/tools/weevely/modules/backdoor/tcp.py
+    search_string: 'import telnetlib'
+    line: 'import telnetlib3'

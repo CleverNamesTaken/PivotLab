@@ -1,4 +1,5 @@
 #!/bin/sh
+#TODO virtual environments, fixing up paths
 
 #apt install tools
 
@@ -9,7 +10,6 @@ sudo apt install -y proxychains4 git python3 python3-venv python3-packaging soca
 # Install the other tools
 
 ## Install golang
-
 echo '[+] Installing golang'
 wget https://go.dev/dl/go1.24.3.linux-amd64.tar.gz
 rm -rf /usr/local/go && tar -C /usr/local -xzf go1.24.3.linux-amd64.tar.gz
