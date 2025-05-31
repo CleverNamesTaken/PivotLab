@@ -8,11 +8,8 @@ ludus:
     force_ip: false
     cpus: 4
     linux: true
-    testing:
-      snapshot: false
-      block_internet: false
     roles:
-      - attackBox
+      - attack_box
   - vm_name: "{{ range_id }}-lamp"
     hostname: "lamp"
     template: debian-12-x64-server-template
@@ -60,12 +57,16 @@ ludus:
     cpus: 4
     linux: true
     roles:
-     - linuxTarget
-     - badsectorlabs.ludus_vulhub
+     - ludus_vulhub
+     - linux_target
     role_vars:
       vulhub_envs:
       - erlang/CVE-2025-32433
       - cups-browsed/CVE-2024-47177
+      vulhub_docker_apt:
+      - netcat-traditional
+      - curl
+      - socat
   - vm_name: "{{ range_id }}-windows"
     hostname: "{{ range_id }}-windows"
     template: win2019-server-x64-template
@@ -77,5 +78,5 @@ ludus:
     windows:
       sysprep: false
     roles:
-      - windowsTarget
+      - windows_target
 

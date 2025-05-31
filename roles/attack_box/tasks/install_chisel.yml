@@ -1,6 +1,6 @@
 - name: Install golang
   ansible.builtin.package:
-    name: 
+    name:
       - golang-go
 
 - name: Create chisel directory
@@ -13,6 +13,4 @@
   ansible.builtin.git:
     repo: 'https://github.com/jpillora/chisel.git'
     dest: /home/kali/tools/chisel
-    force: yes
-
-
+    force: true

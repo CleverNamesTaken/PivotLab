@@ -42,22 +42,6 @@
     group: "kali"
     mode: '0555'
 
-      #- name: Add SSH aliases for ssh tom
-      #  ansible.builtin.lineinfile:
-      #    path: "/root/.bashrc"
-      #    line: "alias {{ item }}_r='ssh root@{{ item }}'"
-      #    create: true
-      #    state: present
-      #    insertafter: EOF
-      #    regexp: "^alias {{ item }}_r="
-      #    owner: "root"
-      #    group: "root"
-      #    mode: '0644'
-      #  loop:
-      #    - tom
-      #    - lamp
-      #    - nginx
-
 # https://www.kali.org/blog/new-kali-archive-signing-key/ 
 - name: update keyring file
   ansible.builtin.get_url:
@@ -109,4 +93,3 @@
     user: kali
     runas: root
     commands: ALL
-

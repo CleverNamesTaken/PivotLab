@@ -10,13 +10,14 @@
       - setuptools
       - telnetlib3
     virtualenv: /opt/virtual_environments/weevely
-    virtualenv_site_packages: yes
+    virtualenv_site_packages: true
     virtualenv_command: "python3 -m venv"
+
 - name: Install the Python tool in the virtual environment
   ansible.builtin.git:
     repo: 'https://github.com/epinna/weevely3.git'
     dest: /home/kali/tools/weevely
-    force: yes
+    force: true
 
 - name: Replace string to execute
   ansible.builtin.lineinfile:

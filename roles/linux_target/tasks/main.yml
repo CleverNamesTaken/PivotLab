@@ -27,10 +27,10 @@
 - name: Install utilities
   ansible.builtin.package:
     name:
-    - python3
-    - python3-flask
-    - iptables
-    - netcat-traditional
+      - python3
+      - python3-flask
+      - iptables
+      - netcat-traditional
     state: present
 
 - name: Create Gunicorn systemd service
@@ -42,7 +42,7 @@
 - name: Enable and start service
   service:
     name: callme
-    enabled: yes
+    enabled: true
     state: started
 
 - name: Add public key from kali

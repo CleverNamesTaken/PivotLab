@@ -8,11 +8,10 @@
   ansible.builtin.git:
     repo: 'https://github.com/zema1/suo5.git'
     dest: /home/kali/tools/suo5
-    force: yes
+    force: true
 
 - name: Download suo5
   ansible.builtin.get_url:
     url: https://github.com/zema1/suo5/releases/download/v1.3.1/suo5-linux-amd64
     dest: /home/kali/tools/suo5/
     owner: kali
-

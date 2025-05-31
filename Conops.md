@@ -914,7 +914,7 @@ The linux machine at 10.X.22.50 is vulnerable to CVE-2024-47176, a UDP-based exp
 
 It is also vulnerable to CVE-2025-32433 on port 2222. CVE-2025-32433 is an unauthenticated RCE against the SSH server for Erlang/OTP.
 
-Both vulnerabilities are hosted in a docker container through Vulhub, so landing in the docker container might not be all that fun for you.  Feel free to ssh in as root with the key on the kali machine at `/home/kali/.ssh/id_rsa`.
+Both vulnerabilities are hosted in docker containers through Vulhub. Netcat, curl and socat have been installed in the container to allow for more pivoting.
 
 #### Windows exploitation
 

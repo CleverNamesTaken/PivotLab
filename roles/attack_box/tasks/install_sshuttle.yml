@@ -1,6 +1,5 @@
 - name: Install sshuttle
   ansible.builtin.package:
-    name: 
+    name:
       - sshuttle
     state: present
-

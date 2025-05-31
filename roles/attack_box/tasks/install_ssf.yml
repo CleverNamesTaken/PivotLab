@@ -8,13 +8,12 @@
     src: "{{ item }}"
     dest: /home/kali/tools/ssf
     owner: kali
-    remote_src: yes
+    remote_src: true
   loop:
-  - https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-win-x86_64-3.0.0.zip
-  - https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-linux-x86_64-3.0.0.zip
+    - https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-win-x86_64-3.0.0.zip
+    - https://github.com/securesocketfunneling/ssf/releases/download/3.0.0/ssf-linux-x86_64-3.0.0.zip
 
 - name: Copy ssf config file
   ansible.builtin.copy:
     src: "config.json"  # File must exist in roles/myrole/files/yourfile.txt
     dest: "/home/kali/tools/ssf"
-

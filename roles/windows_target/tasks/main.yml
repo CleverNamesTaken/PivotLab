@@ -1,5 +1,4 @@
 ---
-# tasks file for roles/prepWinTarget
 # Add a check before trying to re-install
 - name: "Check if .NET 4.8 already installed"
   ansible.windows.win_reg_stat:
@@ -13,12 +12,12 @@
 - name: "Download and Install Microsoft .NET Framework 4.8."
   block:
   - name: Download .NET Framework 4.8 installer
-    win_get_url:
+    ansible.windows.win_get_url:
       url: "https://download.microsoft.com/download/f/3/a/f3a6af84-da23-40a5-8d1c-49cc10c8e76f/NDP48-x86-x64-AllOS-ENU.exe"
       dest: "C:\\Windows\\Temp\\dotnet48.exe"
     #exit code of 9009 looks like it still works?
   - name: Install .NET Framework 4.8
-    win_command: "C:\\Windows\\Temp\\dotnet48.exe setup /passive /norestart /log C:\\Windows\\Temp\\dotnet_install.log"
+    ansible.windows.win_command: "C:\\Windows\\Temp\\dotnet48.exe setup /passive /norestart /log C:\\Windows\\Temp\\dotnet_install.log"
     register: result
       #A 3010 exit code means the install was successful but a reboot is required.
       #I know this only through trial and error and could not find documentation
@@ -30,14 +29,9 @@
          dotnet48__release_registered.raw_value < 528040))
 
 - name: install the Win32-OpenSSH service
-  win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name: openssh
     package_params: /SSHServerFeature
-    state: present
-
-- name: features | Managing Remote Desktop Feature
-  win_feature:
-    name: Remote-Desktop-Services
     state: present
 
 - name: Create a root user
@@ -51,16 +45,13 @@
       - "Remote Desktop Users"
 
 - name: Copy public key to authorized_keys
-  win_copy:
+  ansible.windows.win_copy:
     src: "/tmp/kali_id_rsa.pub"
     dest: "C:\\ProgramData\\ssh\\administrators_authorized_keys"
 
 #Tried to do this with ansible roles, but failed too many times.
 - name: Set permissions on authorized_keys
-  win_command: 'icacls C:\ProgramData\ssh\administrators_authorized_keys /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"'
-
-- name: Disable realtime monitoring
-  win_shell: Set-MpPreference -DisableRealtimeMonitoring $true
+  ansible.windows.win_command: 'icacls C:\ProgramData\ssh\administrators_authorized_keys /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"'
 
 - name: "Check if Unified Remote already installed"
   ansible.windows.win_stat:
@@ -74,11 +65,11 @@
       url: https://www.unifiedremote.com/static/builds/server/windows-x86/2483/ServerSetup-3.11.0.2483.exe
       dest: 'C:\Windows\temp\ServerSetup-3.11.0.2483.exe'
   - name: Install Unified Remote 
-    win_command: "C:\\Windows\\Temp\\ServerSetup-3.11.0.2483.exe /silent"
+    ansible.windows.win_command: "C:\\Windows\\Temp\\ServerSetup-3.11.0.2483.exe /silent"
   when: (not file_check.stat.exists)
 
 - name: Install NSSM
-  win_chocolatey:
+  chocolatey.chocolatey.win_chocolatey:
     name: nssm
     state: present
 
@@ -87,36 +78,33 @@
     name: WinServer
   register: winserver_info
 
-- name: Debug winserver_info
-  debug:
-    var: winserver_info
-
 - name: "Create Unified Remote Service"
   block:
   - name: Create WinServer Service
-    win_command: >
+    ansible.windows.win_command: >
       nssm install WinServer "C:\\Program Files (x86)\\Unified Remote 3\\RemoteServerWin.exe"
   - name: Set Winserver to Auto-Start
-    win_command: nssm set Winserver Start SERVICE_AUTO_START
+    ansible.windows.win_command: nssm set Winserver Start SERVICE_AUTO_START
   when: winserver_info.services is not defined or winserver_info.services | length == 0
 
 - name: Start Winserver Service
-  win_service:
+  ansible.windows.win_service:
     name: WinServer
     state: started
-
 
 - name: Copy PowerShell script to target
   ansible.windows.win_copy:
     src: disable_defender.ps1
     dest: C:\Windows\Temp\disable_defender.ps1
 
-- name: Install service with NSSM to run PowerShell script
-  win_command: >
-    nssm install KillDefender  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoProfile -File C:\\Windows\\Temp\\disable_defender.ps1"
 
-    #- name: Start the service
-    #  ansible.windows.win_service:
-    #    name: KillDefender
-    #    state: started
-    #
+- name: Gather info for KillDefender service
+  ansible.windows.win_service_info:
+    name: KillDefender
+  register: killdefender_info
+
+
+- name: Install service with NSSM to run PowerShell script
+  ansible.windows.win_command: >
+    nssm install KillDefender  "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe -ExecutionPolicy Bypass -NoProfile -File C:\\Windows\\Temp\\disable_defender.ps1"
+  when: killdefender_info.services is not defined or killdefender_info.services | length == 0
