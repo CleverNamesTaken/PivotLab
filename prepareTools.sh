@@ -88,9 +88,9 @@ echo ewogICJzc2YiOiB7CiAgICAiYXJndW1lbnRzIjogIiIsCiAgICAiY2lyY3VpdCI6IFtdLAogICA
 # install exploits
 echo '[+] Downloading the exploit POCs'
 mkdir -p ~/tools/exploits
-git clone https://github.com/IppSec/evil-cups.git ~/tools/evil-cups
+git clone https://github.com/IppSec/evil-cups.git ~/tools/exploits/evil-cups
 
-git clone https://github.com/TeneBrae93/CVE-2025-3243.git ~/tools/CVE-2025-3243
+git clone https://github.com/TeneBrae93/CVE-2025-3243.git ~/tools/exploits/CVE-2025-3243
 
 
 sudo python3 -m venv /opt/virtual_environments/exploits
