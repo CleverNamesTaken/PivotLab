@@ -916,6 +916,8 @@ It is also vulnerable to CVE-2025-32433 on port 2222. CVE-2025-32433 is an unaut
 
 Both vulnerabilities are hosted in docker containers through Vulhub. Netcat, curl and socat have been installed in the container to allow for more pivoting.
 
+See `~/tools/exploits/` for the proof of concept exploits.
+
 #### Windows exploitation
 
 The Windows machine at 10.X.22.60 is vulnerable to CVE-2022-3229, an authentication bypass in Unified Remote version 3.11.0.2483 and prior.  Windows Defender has been turned off to allow you to use the metasploit module for this exploit.

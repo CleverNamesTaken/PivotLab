@@ -1,6 +1,6 @@
 ---
 # tasks file for roles/attackBox
-- name: Create .ssh directory
+- name: Create directories
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -78,6 +78,7 @@
     - install_ssf.yml
     - install_sshuttle.yml
     - install_suo5.yml
+    - install_exploits.yml
 
 - name: Recursively change ownership of a directory
   ansible.builtin.file:

@@ -19,13 +19,13 @@
     dest: /home/kali/tools/weevely
     force: true
 
-- name: Replace string to execute
+- name: Replace string to execute weevely.py
   ansible.builtin.lineinfile:
     path: /home/kali/tools/weevely/weevely.py
     search_string: '#!/usr/bin/env python'
     line: '#!/opt/virtual_environments/weevely/bin/python3'
 
-- name: Replace string to execute
+- name: Update telnet library in script
   ansible.builtin.lineinfile:
     path: /home/kali/tools/weevely/modules/backdoor/tcp.py
     search_string: 'import telnetlib'
