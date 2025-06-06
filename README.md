@@ -167,7 +167,7 @@ Project Link: [https://github.com/CleverNamesTaken/PivotLab](https://github.com/
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* [Eric (Bad Sector Labs)](https://gitlab.com/badsectorlabs) for all the amazing work on Ludus.
+* [Erik (Bad Sector Labs)](https://gitlab.com/badsectorlabs) for all the amazing work on Ludus.
 * opsdisk and the incredible [Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook)
 * fvarovillodres for his development of the [ansible-role for installing a LAMP stack](https://github.com/fvarovillodres/ansible-role-lamp)
 
