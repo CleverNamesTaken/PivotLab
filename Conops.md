@@ -149,6 +149,7 @@ ssh root@lamp "grep PermitTunnel /etc/ssh/sshd_config"
 ssh root@lamp "sed -i 's:#PermitTunnel no:PermitTunnel yes:' /etc/ssh/sshd_config"
 ssh root@lamp "systemctl reload sshd"
 ssh root@lamp "grep PermitTunnel /etc/ssh/sshd_config"
+ssh root@lamp "systemctl reload ssh"
 ```
 	
 ##### Create the tun interface
