@@ -87,6 +87,7 @@ sed -i 's:GatewayPorts no:GatewayPorts yes:' /etc/ssh/sshd_config
     #This will allow you to use the -R port to open a port on the ssh server that can listen on non-loopback interfaces.
 sed -i 's:AllowForwarding no:AllowForwarding yes:' /etc/ssh/sshd_config
     #This will allow you to forward traffic.  If you are not able to forward traffic, you will not be able to pivot with SSH.
+systemctl reload ssh
 ```
 
 

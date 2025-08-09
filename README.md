@@ -53,7 +53,7 @@ Broadly speaking, this lab includes the use of three different types of tools:
 - non-native binaries
 - webshells
 
-The lab consists of three jump boxes with different web servers, and two "target" machines for exploitation.  All of the machines except for one of the targets is Debian-based.  The three web servers include a tomcat server for jsp webshells, an apache server for php webshells, and an nginx server.  All of the machines can be administered through the ssh key provided on the kali attack box as the root user, including the two "target" machines.
+The lab consists of three jump boxes with different web servers, and two "target" machines for exploitation.  All of the machines except for one of the targets is Debian-based.  The three web servers include a Tomcat server for jsp webshells, an Apache server for php webshells, and an nginx server.  All of the machines can be administered through the SSH key provided on the kali attack box as the root user, including the two "target" machines.
 
 
 
@@ -62,7 +62,7 @@ The lab consists of three jump boxes with different web servers, and two "target
 
 ## Getting Started
 
-This guide assumes the user already has Promox and Ludus installed.
+This guide assumes the user already has Promox and Ludus installed.  If Ludus is not yet installed, start [here](https://docs.ludus.cloud/docs/quick-start/install-ludus).
 
 ### Installation
 
