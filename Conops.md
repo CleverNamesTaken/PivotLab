@@ -74,7 +74,7 @@ The goal is provide basic functionality of each tool, although there are certain
 
 We will begin with ssh because it is the bread and butter of how Linux systems are administered, and indeed it will be how we move tools around for this lab as well.
 
-I recommend checking out [the Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook), which has a great deal of excellent information on how to master SSH tunnels.  For basic remembering basic syntax, I recall that the `-L` flag means you are opening a port *L*ocally, whereas `-R` means you are opening a port on the *R*emote host.
+I recommend checking out [the Cyber Plumber's Handbook](https://github.com/opsdisk/the_cyber_plumbers_handbook), which has a great deal of excellent information on how to master SSH tunnels.  For remembering basic syntax, I recall that the `-L` flag means you are opening a port *L*ocally, whereas `-R` means you are opening a port on the *R*emote host.
 
 We will just cover four features of SSH:
 
