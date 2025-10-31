@@ -1,32 +1,5 @@
 - name: Install Weeveley3 requirements
   ansible.builtin.pip:
     name:
-      - prettytable
-      - Mako
-      - PyYAML
-      - python-dateutil
-      - PySocks
-      - pyOpenSSL
-      - setuptools
-      - telnetlib3
-    virtualenv: /opt/virtual_environments/weevely
-    virtualenv_site_packages: true
-    virtualenv_command: "python3 -m venv"
+      - weevely
 
-- name: Install the Python tool in the virtual environment
-  ansible.builtin.git:
-    repo: 'https://github.com/epinna/weevely3.git'
-    dest: /home/kali/tools/weevely
-    force: true
-
-- name: Replace string to execute weevely.py
-  ansible.builtin.lineinfile:
-    path: /home/kali/tools/weevely/weevely.py
-    search_string: '#!/usr/bin/env python'
-    line: '#!/opt/virtual_environments/weevely/bin/python3'
-
-- name: Update telnet library in script
-  ansible.builtin.lineinfile:
-    path: /home/kali/tools/weevely/modules/backdoor/tcp.py
-    search_string: 'import telnetlib'
-    line: 'import telnetlib3'

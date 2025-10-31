@@ -1,8 +1,8 @@
 <input type="text" id="ip" placeholder="IP">
 <input type="text" id="port" placeholder="Port">
 <select id="protocol">
-  <option value="tcp">TCP</option>
-  <option value="udp">UDP</option>
+  <option value="TCP">TCP</option>
+  <option value="UDP">UDP</option>
 </select>
 <button onclick="sendPacket()">Send</button>
 <p>curl command to make this request is as follows:</p>
@@ -16,6 +16,7 @@ function sendPacket() {
   };
   fetch('/send-packet', { 
     method: 'POST', 
+    Content-Type: 'application/json',
     body: JSON.stringify(data) 
   });
 }
