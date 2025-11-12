@@ -1,5 +1,23 @@
-- name: Install Weeveley3 requirements
+- name: Create virtualenv for weevely
   ansible.builtin.pip:
-    name:
-      - weevely
+    name: pip
+    virtualenv: /opt/virtual_environments/weevely
+    virtualenv_command: "python3 -m venv"
 
+- name: Clone Weevely repository
+  ansible.builtin.git:
+    repo: 'https://github.com/epinna/weevely3.git'
+    dest: /home/kali/tools/weevely
+    force: true
+
+- name: Install Weevely in virtualenv
+  ansible.builtin.pip:
+    name: /home/kali/tools/weevely
+    editable: true
+    virtualenv: /opt/virtual_environments/weevely
+
+- name: Create symlink to weevely executable
+  ansible.builtin.file:
+    src: /opt/virtual_environments/weevely/bin/weevely
+    dest: /usr/local/bin/weevely
+    state: link
