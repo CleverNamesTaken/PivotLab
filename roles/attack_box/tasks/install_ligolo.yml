@@ -1,4 +1,4 @@
-- name: Create ssf directory
+- name: Create ligolo-ng directory
   ansible.builtin.file:
     path: /home/kali/tools/ligolo-ng
     state: directory

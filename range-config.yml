@@ -80,3 +80,28 @@ ludus:
     roles:
       - windows_target
 
+network:
+  # Block communication between vlan (by default, allowed)
+  inter_vlan_default: REJECT
+  
+  # Keep internet et WireGuard
+  external_default: ACCEPT
+  wireguard_vlan_default: ACCEPT
+  
+  rules:
+    - name: Allow jump boxes to access targets VLAN
+      vlan_src: 20
+      ip_last_octet_src: 220-222  # only lamp, nginx, tom
+      vlan_dst: 22
+      protocol: all
+      ports: all
+      action: ACCEPT
+    
+    
+    - name: Allow targets to respond to jump boxes
+      vlan_src: 22
+      vlan_dst: 20
+      ip_last_octet_dst: 220-222  # only lamp, nginx, tom
+      protocol: all
+      ports: all
+      action: ACCEPT
