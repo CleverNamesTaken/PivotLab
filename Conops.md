@@ -27,24 +27,7 @@ Whether you use tmux, terminator, zellij, wezterm or something else, I highly re
 
 ## Objective
 
-Hit the targets through whatever weird tunnels you like.  The linux target at 10.X.22.50 has a web server that will attempt to call back to you on the IP, port and protocol of your choosing.  If you use the lab-provided kali machine or run the the `prepareTools.sh` script, you will have a bash script called `callMe.sh. in your path that will make the POST request for you.  If you choose not to use script, you can also make the request by visiting http://10.X.22.50 in a browser.
-
-As a super lame example with no pivoting, do this:
-
-```
-[[ CallMe~Listener ]]*
-socat -u tcp-listen:4444,reuseaddr,fork open:/tmp/PROOF,create,append
-```
-
-```
-[[ CallMe~Trigger ]]*
-lsof -i tcp:4444
-	#Make sure your listener is ready to go
-cat /tmp/PROOF
-	#Should not exist
-callMe.sh linux 80 <ATTACK_BOX_IP> 4444 tcp
-cat /tmp/PROOF
-```
+Hit the targets through whatever weird tunnels you like.  The linux target at 10.X.22.50 has a web server that will attempt to call back to you on the IP, port and protocol of your choosing.  If you use the lab-provided kali machine or run the the `prepareTools.sh` script, you will have a bash script called `callMe.sh. in your path that will make the POST request for you.  If you choose not to use the script, you can also make the request by visiting http://10.X.22.50 in a browser.
 
 ## Conops
 
