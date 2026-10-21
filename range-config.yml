@@ -79,6 +79,17 @@ ludus:
       sysprep: false
     roles:
       - windows_target
+  - vm_name: "{{ range_id }}-latest"
+    hostname: "latest"
+    template: debian-12-x64-server-template
+    vlan: 23
+    ip_last_octet: 70
+    force_ip: false
+    ram_gb: 8
+    cpus: 4
+    linux: true
+    roles:
+      - latest_target
 
 network:
   # Block communication between vlan (by default, allowed)
@@ -102,6 +113,20 @@ network:
       vlan_src: 22
       vlan_dst: 20
       ip_last_octet_dst: 220-222  # only lamp, nginx, tom
+      protocol: all
+      ports: all
+      action: ACCEPT
+
+    - name: Allow targets to access latest VLAN
+      vlan_src: 22
+      vlan_dst: 23
+      protocol: all
+      ports: all
+      action: ACCEPT
+
+    - name: Allow latest to respond to targets
+      vlan_src: 23
+      vlan_dst: 22
       protocol: all
       ports: all
       action: ACCEPT
